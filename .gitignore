@@ -1,0 +1,8 @@
+# Directorios de dependencias
+node_modules/
+
+# Archivos de logs de npm
+npm-debug.log
+*.log
+
+# Archivos generados por el compilador TypeScript (si no están en 'dist')
