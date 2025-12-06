@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "ejercicio1-node.js/backend/api/index.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "ejercicio2-typescript/dist/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "^/ejercicio2/(.*)$",
+      "dest": "/ejercicio2-typescript/dist/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/ejercicio1-node.js/backend/api/index.ts"
+    }
+  ]
+}

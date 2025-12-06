@@ -71,3 +71,7 @@ Proyecto que implementa enumeraciones (`enums`) en TypeScript para representar y
 
 -   **Profesor:** Carlos Márquez
 -   **Institución:** UNETI
+
+## Estudiante
+
+-   Frederick Durán 👨🏻‍💻
