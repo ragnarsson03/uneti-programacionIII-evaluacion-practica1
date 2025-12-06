@@ -3,10 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Principal</title>
+    <title>Ejercicio 1 - Animal Favorito</title>
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <h1>Hola</h1>
+
+    <div class="container">
+        <h1>Bienvenido, Profesor Carlos Márquez 👨🏻‍💻</h1>
+        <p>Ingrese el nombre de su animal favorito para enviarlo al servidor.</p>
+
+        <!-- Formulario que envía el valor a /procesar -->
+        <form action="/procesar" method="POST">
+            <label for="animal">Animal favorito:</label>
+            <input type="text" id="animal" name="animal" placeholder="Ej: Tigre" required>
+
+            <button type="submit">Enviar</button>
+        </form>
+
+ <h3>Ejemplos cargados desde el backend:</h3>
+        <ul>
+            <% animalesEjemplos.forEach(e => { %>
+                <li><%= e %></li>
+            <% }) %>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>Desarrollado por Frederick Durán =)</p>
+    </div>
 </body>
 </html>
