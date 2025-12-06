@@ -67,6 +67,23 @@ Proyecto que implementa enumeraciones (`enums`) en TypeScript para representar y
 
 ---
 
+
+## 🧩 Implementación Serverless en Vercel (Versión final del Ejercicio 1)
+
+El ejercicio se ejecuta dentro de:
+
+/api/animal.ts
+
+Esto permite:
+- Manejo de formularios  
+- Renderizado dinámico básico  
+- Ejecución sin servidor dedicado  
+
+---
+
+
+
+
 ## 👨‍🏫 Docente
 
 -   **Profesor:** Carlos Márquez
