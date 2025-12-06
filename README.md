@@ -1,46 +1,73 @@
-# uneti-programacionIII-evaluacion-practica1
+<div align="center">
+  <img src="uneti-logotipo.png" alt="Logo UNETI" width="200"/>
+</div>
+
+<h1 align="center">Evaluación Práctica 1 – Programación III (UNETI – 2025-2)</h1>
+
+Este repositorio contiene el desarrollo de los dos ejercicios solicitados en la Evaluación Práctica 1 de la Unidad Curricular Programación III. El proyecto está organizado en directorios independientes para mantener una separación clara entre cada actividad.
+
+---
+
+## 📂 Estructura General del Repositorio
+
+```
+.
+├── ejercicio1-node.js/   # Aplicación web con Node.js, Express y EJS
+├── ejercicio2-typescript/  # Lógica de negocio con TypeScript y Vite
+├── uneti-logotipo.png      # Logotipo de la institución
+└── README.md               # Este archivo
+```
+
+---
+
+## 🚀 Ejercicio 1 – Node.js + Express + TypeScript + EJS
+
+Aplicación web simple que presenta un formulario donde el usuario puede ingresar su animal favorito. Al enviarlo, el servidor procesa la información y muestra el resultado en una nueva página renderizada dinámicamente con EJS.
+
+### 🛠️ Tecnologías Utilizadas
+
+-   **Node.js:** Entorno de ejecución de JavaScript del lado del servidor.
+-   **Express:** Framework web minimalista para Node.js, utilizado para gestionar rutas y middlewares.
+-   **TypeScript:** Superset de JavaScript que añade tipado estático para un desarrollo más robusto.
+-   **EJS (Embedded JavaScript):** Es un Motor de plantillas que permite generar HTML dinámico incrustando código JavaScript.
 
 
-# Evaluación Práctica 1 – Programación III (UNETI – 2025-2)
-
-Este repositorio contiene el desarrollo de los dos ejercicios solicitados en la Evaluación Práctica 1 de la Unidad Curricular Programación III.
-
-El proyecto está organizado en directorios independientes para mantener una separación clara entre cada actividad:
-
-
-
-<h1>Repositorio oficial de la Evaluación Práctica 1 de Programación III (UNETI – 2025-2).</h1>
-
-El proyecto se encuentra dividido en dos ejercicios independientes:
-
-<h2>Ejercicio 1 – Node.js + Express + EJS: </h2>
-
-Aplicación que recibe el nombre del animal favorito del usuario mediante un formulario HTML y recarga una segunda vista generada desde el servidor con EJS.
-
-Node.js: 
-
-Express:
-
-EJS:
-
-EJS sirve para generar HTML dinámico en aplicaciones web, especialmente en entornos Node.js como el framework Express.js, funcionando como un motor de plantillas que permite incrustar código JavaScript directamente en archivos HTML. Esto significa que puedes crear páginas web cuyo contenido cambia en función de datos que llegan desde el servidor, haciendo que el proceso de creación de HTML dinámico sea más sencillo para los desarrolladores que ya conocen JavaScript. 
-
-¿Por qué usar EJS?
-
+-    **¿Por qué usar EJS?**
 Facilidad de integración: Se integra muy bien con aplicaciones que ya utilizan Node.js y Express.js.
 
-Sintaxis familiar: Su uso es intuitivo para los desarrolladores de JavaScript, ya que no es necesario aprender un nuevo lenguaje de marcado complejo.
 
-Versatilidad: Permite la creación de estructuras complejas en las plantillas mediante el uso de bucles, condicionales y la inclusión de otras plantillas más pequeñas (llamadas parciales). 
+### ⚙️ Instalación y Ejecución
 
+1.  **Navegar al directorio del backend:**
+    ```bash
+    cd ejercicio1-node.js/backend
+    ```
 
+2.  **Instalar dependencias:**
+    ```bash
+    npm install
+    ```
 
-<h2>Ejercicio 2 – TypeScript + Vite:</h2>
-Proyecto que implementa enumeraciones para representar géneros y países de películas, mostrando los resultados en la consola del navegador.
+3.  **Ejecutar el servidor en modo de desarrollo:**
+    El servidor se iniciará en `http://localhost:3000` y se reiniciará automáticamente con cada cambio.
+    ```bash
+    npm run dev
+    ```
 
-Typescript:
+---
 
-Vite: 
+## 🔬 Ejercicio 2 – TypeScript + Vite
 
-Ambos ejercicios están escritos en TypeScript, documentados con explicaciones propias del estudiante y organizados según las indicaciones establecidas por el docente.
-Incluye enlace de despliegue (si aplica) y enlaces a los códigos fuente en GitHub.
+Proyecto que implementa enumeraciones (`enums`) en TypeScript para representar y clasificar géneros y países de películas, mostrando los resultados directamente en la consola del navegador.
+
+### 🛠️ Tecnologías Utilizadas
+
+-   **TypeScript:** Utilizado para definir los `enums` y la lógica de la aplicación.
+-   **Vite:** Herramienta de desarrollo frontend moderna que proporciona un servidor de desarrollo rápido y empaqueta el código para producción.
+
+---
+
+## 👨‍🏫 Docente
+
+-   **Profesor:** Carlos Márquez
+-   **Institución:** UNETI
