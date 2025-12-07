@@ -5,10 +5,14 @@ import Link from 'next/link';
 export default function Home() {
   return (
     // Aquí usamos clases de Tailwind para un diseño simple y centrado
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+    <div className="flex flex-col items-center justify-center w-full min-h-[calc(100vh-4rem)] bg-gray-100 p-4">
+      
+      <p className="text-lg text-gray-700 mb-4">Hola👋🏻, Profesor Carlos Márquez</p>
+
       <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+        
         <h1 className="text-3xl font-bold text-center text-indigo-700 mb-6 border-b pb-2">
-          Evaluación Práctica 1 – Programación III
+          Evaluación Práctica 1  Programación III 📚
         </h1>
         
         <ul className="space-y-4">
@@ -33,6 +37,7 @@ export default function Home() {
           </li>
         </ul>
       </div>
+      <p className="text-lg text-gray-700 mb-4">Felicidades, la app se está ejecutando 🎉!!</p>
     </div>
   );
 }

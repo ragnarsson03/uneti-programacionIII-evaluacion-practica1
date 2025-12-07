@@ -19,14 +19,14 @@ export default function Header() {
               className="rounded-full"
             />
             <span className="text-xl font-bold tracking-tight hidden sm:block">
-              Prog III - Evaluación
+              Prog III - Evaluación 1
             </span>
           </Link>
 
           {/* Enlaces de Navegación */}
           <nav className="flex space-x-6">
             <Link href="/" className="hover:text-indigo-200 transition duration-150 py-2">
-              Menú
+              Inicio
             </Link>
             <Link href="/ejercicio1" className="hover:text-indigo-200 transition duration-150 py-2">
               Ejercicio 1
