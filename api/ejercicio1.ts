@@ -1,29 +1,29 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import express, { Request, Response } from "express";
+import serverless from "serverless-http";
+import path from "path";
 
-export default function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Método no permitido. Usa POST." });
-  }
+const app = express();
 
-  try {
-    const { numero } = req.body;
+// Middleware para procesar formularios
+app.use(express.urlencoded({ extended: true }));
 
-    if (typeof numero !== "number") {
-      return res.status(400).json({ error: "Debe enviar un número válido." });
-    }
+// Archivos estáticos (CSS, JS, imágenes)
+app.use(express.static(path.join(process.cwd(), "ejercicio1-node.js/frontend/public")));
 
-    const resultado = numero * 2;
+// Configuración de vistas EJS
+app.set("views", path.join(process.cwd(), "ejercicio1-node.js/frontend/views"));
+app.set("view engine", "ejs");
 
-    return res.status(200).json({
-      mensaje: "Operación exitosa",
-      numeroOriginal: numero,
-      resultado
-    });
+// Ruta principal (formulario)
+app.get("/", (req: Request, res: Response) => {
+  res.render("index", { profesor: "Carlos Márquez" });
+});
 
-  } catch (error) {
-    return res.status(500).json({
-      error: "Error interno del servidor",
-      detalle: `${error}`
-    });
-  }
-}
+// Procesar formulario
+app.post("/procesar", (req: Request, res: Response) => {
+  const animal = req.body.animal || "No especificado";
+  res.render("resultado", { animal });
+});
+
+// Exportar para Vercel
+export const handler = serverless(app);
