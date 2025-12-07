@@ -2,7 +2,7 @@
 // muy importante no eliminar ni modificar
 import Link from 'next/link';
 
-export default function HomePage() {
+export default function Home() {
   return (
     // Aquí Usamos clases de Tailwind para un diseño simple y centrado
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
