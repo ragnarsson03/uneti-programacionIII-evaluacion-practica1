@@ -22,7 +22,7 @@ export default function Ejercicio1Resultado({ searchParams }: ResultadoProps) {
                 </h1>
 
                 <p className="text-xl text-gray-700 mb-8">
-                    El animal favorito que fue **interceptado por Node.js** es:
+                    El animal favorito que fue interceptado por Node.js es:
                 </p>
 
                 {/* Muestra el dato procesado */}
