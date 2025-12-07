@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function Ejercicio1Formulario() {
   // El formulario hará POST a la Route Handler (route.ts) en la misma ruta: /ejercicio1
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+   <div className="flex flex-col items-center justify-center bg-gray-100 p-4 min-h-[calc(100vh-4rem)]">
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
         
         {/* Tu diseño migrado de index.html */}
@@ -47,10 +47,10 @@ export default function Ejercicio1Formulario() {
             <li>León</li>
             <li>Perro</li>
         </ul>
-
-      </div>
-      <div className="fixed bottom-4 text-sm text-gray-600">
-        <p>Desarrollado por Frederick Durán =) | <Link href="/" className="text-blue-500 hover:underline">Volver al Menú</Link></p>
+    <p className="fixed bottom-4 text-sm text-gray-600">
+      Desarrollado por Frederick Durán =) | <Link href="/" className="text-blue-500 hover:underline">Volver al Menú</Link>
+      </p>
+  
       </div>
     </div>
   );
