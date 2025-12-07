@@ -11,8 +11,8 @@ export default function Header() {
           <Image 
             src="/uneti-logotipo.png" 
             alt="UNETI Logo" 
-            width={30} 
-            height={30} 
+            width={50} 
+            height={50} 
             className="rounded-full"
           />
           <span className="text-xl font-bold hidden sm:block">

@@ -1,71 +1,72 @@
-// src/app/ejercicio2/page.tsx - Vista del Ejercicio 2: TypeScript Enums
-import { GeneroPelicula, PaisPelicula } from './enums';
-
-/**
- * @description Función auxiliar para obtener un array de nombres de enum,
- * excluyendo las claves numéricas generadas por TypeScript para los enums numéricos.
- * @param {any} enumObject - El objeto enum (e.g., GeneroPelicula).
- * @returns {string[]} Un array de cadenas con los nombres de las propiedades.
- */
-function getEnumNames(enumObject: any): string[] {
-    // Filtramos para asegurarnos de que solo se devuelvan los nombres (cadenas),
-    // y no los índices numéricos (0, 1, 2, etc.) que TypeScript añade.
-    return Object.keys(enumObject).filter(key => isNaN(Number(key)));
-}
+// src/app/ejercicio2/page.tsx
+import { GeneroPelicula, PaisPelicula } from "./enums";
 
 export default function Ejercicio2Enumeraciones() {
+  const generos = Object.values(GeneroPelicula);
+  const paises = Object.values(PaisPelicula);
 
-    // 1. Obtener los nombres amigables de los géneros de películas
-    const generos = getEnumNames(GeneroPelicula);
+  const listaCompleta = [
+    ...generos.map(g => ({ type: "Género", value: g, color: "bg-indigo-200" })),
+    ...paises.map(p => ({ type: "País", value: p, color: "bg-green-200" })),
+  ];
 
-    // 2. Obtener los valores (países) de la enumeración
-    // Para los enums de cadena (string enums), solo necesitamos los valores.
-    const paises = Object.values(PaisPelicula);
-
-    return (
-        <div className="flex flex-col items-center justify-start bg-gray-100 p-8 min-h-[calc(100vh-4rem)]">
-            <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl">
-                
-                <h1 className="text-3xl font-bold text-center text-red-600 mb-8">
-                    🎬 Ejercicio 2: Enumeraciones con TypeScript
-                </h1>
-                
-                {/* -------------------- GÉNEROS DE PELÍCULAS -------------------- */}
-                <h2 className="text-2xl font-semibold text-indigo-700 mb-4 border-b pb-2">
-                    Tipos de Género de Película (Enum Numérico)
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                    {generos.map((genero, index) => (
-                        <div 
-                            key={index} 
-                            className="p-3 bg-indigo-100 rounded-lg text-indigo-800 text-center font-medium shadow-sm"
-                        >
-                            {/* Muestra el nombre del género (clave) y su valor numérico */}
-                            {genero} (Valor: {GeneroPelicula[genero as keyof typeof GeneroPelicula]})
-                        </div>
-                    ))}
-                </div>
-
-                {/* -------------------- PAÍSES DE PELÍCULA -------------------- */}
-                <h2 className="text-2xl font-semibold text-indigo-700 mb-4 border-b pb-2">
-                    Países de Película (Enum de Cadena)
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {paises.map((pais, index) => (
-                        <div 
-                            key={index} 
-                            className="p-3 bg-green-100 rounded-lg text-green-800 text-center font-medium shadow-sm"
-                        >
-                            {/* Muestra el valor de cadena de la enumeración */}
-                            {pais}
-                        </div>
-                    ))}
-                </div>
-
-            </div>
-            <div className="mt-4 text-sm text-gray-500">
-                <p>Vista del Ejercicio 2</p>
-            </div>
+  return (
+    <div className="flex flex-col items-center justify-start bg-gray-100 p-4 min-h-[calc(100vh-4rem)]">
+      <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-4xl grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* COLUMNA IZQUIERDA: LISTADO DE ENUMS */}
+        <div className="lg:col-span-2 space-y-4">
+          <h1 className="text-3xl font-bold text-indigo-700">
+            🎬 Listado de Enumeraciones (TypeScript)
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Aquí se muestran los valores definidos en las enumeraciones de **Género** y **País**.
+          </p>
+          
+          <div className="space-y-3">
+            {listaCompleta.map((item, index) => (
+              <div key={index} className={`p-3 rounded-lg flex justify-between items-center ${item.color} shadow-sm`}>
+                <span className="font-semibold text-gray-800">{item.value}</span>
+                <span className="text-xs text-gray-600 italic">{item.type}</span>
+              </div>
+            ))}
+          </div>
         </div>
-    );
+
+        {/* COLUMNA DERECHA: FORMULARIO DEMO */}
+        <div className="lg:col-span-1 border-l pl-8 space-y-6">
+          <h2 className="text-xl font-bold text-red-600 border-b pb-2">
+            Añadir Ejemplo (No Funcional)
+          </h2>
+          <form className="space-y-4">
+            <label htmlFor="ejemplo" className="block text-gray-700 font-semibold">
+              Nombre del elemento
+            </label>
+            <div className="flex space-x-2">
+              <input 
+                type="text" 
+                id="ejemplo" 
+                placeholder="Ej: Nueva Animación" 
+                className="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500"
+              />
+              <button 
+                type="submit" 
+                className="py-2 px-4 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition duration-150"
+              >
+                Añadir
+              </button>
+            </div>
+            <p className="text-sm text-gray-500 italic">
+              Este formulario es solo demostrativo.
+            </p>
+          </form>
+        </div>
+
+      </div>
+
+      <div className="mt-4 text-sm text-gray-500">
+        <p>Vista del Ejercicio 2. Enumeraciones listas y listadas correctamente.</p>
+      </div>
+    </div>
+  );
 }
