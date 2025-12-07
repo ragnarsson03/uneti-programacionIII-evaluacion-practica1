@@ -1,28 +1,36 @@
 import express from "express";
 import serverless from "serverless-http";
-import path from "path";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
-// Middleware
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, "../ejercicio1-node.js/frontend/public")));
+
+// Leer formularios
 app.use(express.urlencoded({ extended: true }));
 
-// Archivos estáticos
-app.use(express.static(path.join(process.cwd(), "ejercicio1-node.js/public")));
-
-// Configuración de vistas
-app.set("views", path.join(process.cwd(), "ejercicio1-node.js/frontend"));
+// Configuración EJS
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "../ejercicio1-node.js/frontend/views"));
 
-// Ruta principal
+// Rutas
 app.get("/", (req, res) => {
-  res.render("index", { profesor: "Carlos Márquez" });
+    res.render("index", {
+        animalesEjemplos: ["Gato", "Perro", "Delfín"]
+    });
 });
 
-// Procesar formulario
 app.post("/procesar", (req, res) => {
-  const animal = req.body.animal || "No especificado";
-  res.render("resultado", { animal });
+    const { animal } = req.body;
+    res.render("resultado", {
+        animal: animal?.trim() || "No ingresaste ningún animal."
+    });
 });
 
+// Exportar como serverless
 export const handler = serverless(app);
