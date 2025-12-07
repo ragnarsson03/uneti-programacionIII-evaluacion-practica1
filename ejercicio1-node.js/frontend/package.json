@@ -1,15 +1,9 @@
 {
-  "name": "frontend",
+  "name": "ejercicio1-node",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
-    "ejs": "^3.1.10"
+    "express": "^5.2.1",
+    "ejs": "^3.1.10",
+    "serverless-http": "^4.0.0"
   }
 }

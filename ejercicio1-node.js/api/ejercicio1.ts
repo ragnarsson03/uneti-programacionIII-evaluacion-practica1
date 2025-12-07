@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import serverless from "serverless-http";
 import path from "path";
 
@@ -7,22 +7,22 @@ const app = express();
 // Middleware para procesar formularios
 app.use(express.urlencoded({ extended: true }));
 
-// Archivos estáticos (CSS, JS, imágenes)
-app.use(express.static(path.join(process.cwd(), "ejercicio1-node.js/frontend/public")));
+// Aquí van los archivos estáticos (CSS, JS, imágenes)
+app.use(express.static(path.join(__dirname, "../frontend/public")));
 
-// Configuración de vistas EJS
-app.set("views", path.join(process.cwd(), "ejercicio1-node.js/frontend/views"));
+// Vistas (EJS) si quieres mantener plantillas dinámicas
+app.set("views", path.join(__dirname, "../frontend"));
 app.set("view engine", "ejs");
 
 // Ruta principal (formulario)
-app.get("/", (req: Request, res: Response) => {
-  res.render("index", { profesor: "Carlos Márquez" });
+app.get("/", (req, res) => {
+  res.render("index", { animalesEjemplos: ["Gato", "Perro", "Delfín"] });
 });
 
 // Procesar formulario
-app.post("/procesar", (req: Request, res: Response) => {
-  const animal = req.body.animal || "No especificado";
-  res.render("resultado", { animal });
+app.post("/", (req, res) => {
+  const { animal } = req.body;
+  res.render("resultado", { animal: animal || "No ingresado" });
 });
 
 // Exportar para Vercel
