@@ -1,36 +1,56 @@
-export default function handler(req: any, res: any) {
-  if (req.method === "GET") {
-    return res.status(200).json({
-      mensaje: "API del Ejercicio 1 funcionando correctamente 🚀",
-      profesor: "Carlos Márquez",
-    });
-  }
+// api/ejercicio1.ts
+// Este código reemplaza el tuyo, implementando la lectura de HTML
+import { VercelRequest, VercelResponse } from '@vercel/node';
+import * as fs from 'fs';
+import * as path from 'path';
 
-  if (req.method === "POST") {
-    const contentType = (req.headers && req.headers["content-type"]) || "";
-    let animal = "No enviado";
+// Define la ruta base para leer los archivos HTML.
+// Se asume que el directorio raíz es donde se encuentra 'ejercicio1-node.js'
+const frontendDir = path.join(process.cwd(), 'ejercicio1-node.js', 'frontend');
 
-    if (contentType.includes("application/json")) {
-      animal = req.body && req.body.animal ? req.body.animal : animal;
-    } else if (contentType.includes("application/x-www-form-urlencoded")) {
-      const raw = typeof req.body === "string" ? req.body : "";
-      if (raw) {
-        const params = new URLSearchParams(raw);
-        animal = params.get("animal") || animal;
-      } else if (req.body && typeof req.body === "object") {
-        animal = req.body.animal || animal;
-      }
-    } else {
-      if (req.body && typeof req.body === "object") {
-        animal = req.body.animal || animal;
-      } else if (typeof req.body === "string") {
-        const params = new URLSearchParams(req.body);
-        animal = params.get("animal") || animal;
-      }
+export default async (req: VercelRequest, res: VercelResponse) => {
+    // 1. Manejar la solicitud GET (Mostrar el formulario)
+    if (req.method === 'GET') {
+        try {
+            const indexPath = path.join(frontendDir, 'index.html');
+            // Nota: Se usa readFileSync ya que es Serverless y no afecta a otros clientes
+            const indexHtml = fs.readFileSync(indexPath, 'utf-8');
+            
+            // ⚠️ Importante: Devuelve el HTML del formulario.
+            res.setHeader('Content-Type', 'text/html');
+            return res.status(200).send(indexHtml);
+        } catch (error) {
+            console.error('Error al cargar index.html:', error);
+            return res.status(500).send('Error 500: No se pudo cargar el formulario del Ejercicio 1. Revise la ruta de lectura de archivos.');
+        }
     }
 
-    return res.status(200).json({ recibido: animal });
-  }
+    // 2. Manejar la solicitud POST (Procesar y mostrar el resultado)
+    if (req.method === 'POST') {
+        // Vercel/Node.js debería parsear automáticamente el cuerpo del formulario (x-www-form-urlencoded)
+        const animalFavorito = req.body?.animal; // Asumiendo que el campo se llama 'animal' en el formulario
 
-  return res.status(405).json({ error: "Método no permitido" });
-}
+        if (!animalFavorito) {
+            // Si no hay dato, redirige o muestra un error
+            return res.status(400).send('<h1>Error</h1><p>Debe ingresar un animal favorito.</p>');
+        }
+
+        try {
+            const resultadoPath = path.join(frontendDir, 'resultado.html');
+            let resultadoHtml = fs.readFileSync(resultadoPath, 'utf-8');
+            
+            // ⚠️ Reemplaza el placeholder {{animal}} en el HTML
+            resultadoHtml = resultadoHtml.replace('{{animal}}', animalFavorito);
+
+            // ⚠️ Importante: Devuelve la página de resultado procesada.
+            res.setHeader('Content-Type', 'text/html');
+            return res.status(200).send(resultadoHtml);
+        } catch (error) {
+            console.error('Error al procesar el resultado:', error);
+            return res.status(500).send('Error 500: No se pudo procesar la página de resultados.');
+        }
+    }
+    
+    // Si es otro método (PUT, DELETE, etc.)
+    return res.status(405).send('Método no permitido.');
+};
