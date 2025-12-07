@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     icon: {
       url: "/uneti-logotipo.png",
       sizes: "32x32",
-      type: "image/png", // Asumo que es PNG, el sistema confirmó la extensión
+      type: "image/png", // Foto PNG de Uneti
     },
   },
 };
