@@ -1,36 +1,29 @@
-import express from "express";
-import serverless from "serverless-http";
-import path, { dirname } from "path";
-import { fileURLToPath } from "url";
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+export default function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Método no permitido. Usa POST." });
+  }
 
-const app = express();
+  try {
+    const { numero } = req.body;
 
-// Archivos estáticos
-app.use(express.static(path.join(__dirname, "../ejercicio1-node.js/frontend/public")));
+    if (typeof numero !== "number") {
+      return res.status(400).json({ error: "Debe enviar un número válido." });
+    }
 
-// Leer formularios
-app.use(express.urlencoded({ extended: true }));
+    const resultado = numero * 2;
 
-// Configuración EJS
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "../ejercicio1-node.js/frontend/views"));
-
-// Rutas
-app.get("/", (req, res) => {
-    res.render("index", {
-        animalesEjemplos: ["Gato", "Perro", "Delfín"]
+    return res.status(200).json({
+      mensaje: "Operación exitosa",
+      numeroOriginal: numero,
+      resultado
     });
-});
 
-app.post("/procesar", (req, res) => {
-    const { animal } = req.body;
-    res.render("resultado", {
-        animal: animal?.trim() || "No ingresaste ningún animal."
+  } catch (error) {
+    return res.status(500).json({
+      error: "Error interno del servidor",
+      detalle: `${error}`
     });
-});
-
-// Exportar como serverless
-export const handler = serverless(app);
+  }
+}
