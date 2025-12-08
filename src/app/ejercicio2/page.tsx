@@ -1,71 +1,169 @@
-// src/app/ejercicio2/page.tsx
+"use client";
+
+import { useEffect, useState } from "react";
 import { GeneroPelicula, PaisPelicula } from "./enums";
 
-export default function Ejercicio2Enumeraciones() {
-  const generos = Object.values(GeneroPelicula);
+type Pelicula = {
+  titulo: string;
+  genero: GeneroPelicula;
+  pais: PaisPelicula;
+};
+
+function getEnumKeys(enumObject: any): string[] {
+  return Object.keys(enumObject).filter(key => isNaN(Number(key)));
+}
+
+export default function Ejercicio2() {
+  const generos = getEnumKeys(GeneroPelicula);
   const paises = Object.values(PaisPelicula);
 
-  const listaCompleta = [
-    ...generos.map(g => ({ type: "Género", value: g, color: "bg-indigo-200" })),
-    ...paises.map(p => ({ type: "País", value: p, color: "bg-green-200" })),
-  ];
+  const [peliculas, setPeliculas] = useState<Pelicula[]>([]);
+  const [titulo, setTitulo] = useState("");
+  const [genero, setGenero] = useState<GeneroPelicula>(GeneroPelicula.Accion);
+  const [pais, setPais] = useState<PaisPelicula>(PaisPelicula.Venezuela);
+  const [error, setError] = useState("");
+
+  // ✅ CARGAR DESDE LOCALSTORAGE
+  useEffect(() => {
+    const data = localStorage.getItem("peliculas");
+    if (data) {
+      setPeliculas(JSON.parse(data));
+    }
+  }, []);
+
+  // ✅ GUARDAR EN LOCALSTORAGE
+  useEffect(() => {
+    localStorage.setItem("peliculas", JSON.stringify(peliculas));
+  }, [peliculas]);
+
+  const agregarPelicula = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (titulo.trim() === "") {
+      setError("El título no puede estar vacío");
+      return;
+    }
+
+    const existe = peliculas.some(
+      p => p.titulo.toLowerCase() === titulo.toLowerCase()
+    );
+
+    if (existe) {
+      setError("Esa película ya existe");
+      return;
+    }
+
+    const nueva: Pelicula = {
+      titulo,
+      genero,
+      pais
+    };
+
+    setPeliculas([...peliculas, nueva]);
+    setTitulo("");
+    setGenero(GeneroPelicula.Accion);
+    setPais(PaisPelicula.Venezuela);
+    setError("");
+  };
+
+  const eliminarPelicula = (index: number) => {
+    const copia = [...peliculas];
+    copia.splice(index, 1);
+    setPeliculas(copia);
+  };
 
   return (
-    <div className="flex flex-col items-center justify-start bg-gray-100 p-4 min-h-[calc(100vh-4rem)]">
-      <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-4xl grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* COLUMNA IZQUIERDA: LISTADO DE ENUMS */}
-        <div className="lg:col-span-2 space-y-4">
-          <h1 className="text-3xl font-bold text-indigo-700">
-            🎬 Listado de Enumeraciones (TypeScript)
-          </h1>
-          <p className="text-gray-600 mb-6">
-            Aquí se muestran los valores definidos en las enumeraciones de **Género** y **País**.
-          </p>
-          
-          <div className="space-y-3">
-            {listaCompleta.map((item, index) => (
-              <div key={index} className={`p-3 rounded-lg flex justify-between items-center ${item.color} shadow-sm`}>
-                <span className="font-semibold text-gray-800">{item.value}</span>
-                <span className="text-xs text-gray-600 italic">{item.type}</span>
+    <div className="min-h-screen bg-gray-100 flex justify-center p-6">
+      <div className="bg-white max-w-5xl w-full p-8 rounded-xl shadow-xl grid md:grid-cols-2 gap-8">
+
+        {/* IZQUIERDA */}
+        <div>
+          <h1 className="text-3xl font-bold mb-4">Ejercicio 2</h1>
+          <h2 className="text-lg font-semibold mb-2">🎬 Géneros</h2>
+          <ul className="mb-6 space-y-2">
+            {generos.map((g, i) => (
+              <li key={i} className="bg-indigo-100 px-3 py-1 rounded">
+                {g}
+              </li>
+            ))}
+          </ul>
+
+          <h2 className="text-lg font-semibold mb-2">🌍 Países</h2>
+          <ul className="space-y-2">
+            {paises.map((p, i) => (
+              <li key={i} className="bg-green-100 px-3 py-1 rounded">
+                {p}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* DERECHA */}
+        <div>
+          <h2 className="text-xl font-bold mb-4">Añadir Película</h2>
+
+          <form onSubmit={agregarPelicula} className="space-y-3">
+            <input
+              value={titulo}
+              onChange={e => setTitulo(e.target.value)}
+              placeholder="Nombre de la película"
+              className="w-full border p-2 rounded"
+            />
+
+            <select
+              value={genero}
+              onChange={e => setGenero(Number(e.target.value))}
+              className="w-full border p-2 rounded"
+            >
+              {generos.map((g, i) => (
+                <option key={i} value={i}>{g}</option>
+              ))}
+            </select>
+
+            <select
+              value={pais}
+              onChange={e => setPais(e.target.value as PaisPelicula)}
+              className="w-full border p-2 rounded"
+            >
+              {paises.map((p, i) => (
+                <option key={i} value={p}>{p}</option>
+              ))}
+            </select>
+
+            <button className="w-full bg-blue-600 text-white py-2 rounded">
+              Añadir
+            </button>
+
+            {error && <p className="text-red-600 text-sm">{error}</p>}
+          </form>
+
+          <h3 className="text-lg font-bold mt-6 mb-2">Listado</h3>
+
+          <div className="space-y-2">
+            {peliculas.map((p, i) => (
+              <div
+                key={i}
+                className="flex justify-between items-center bg-gray-100 p-2 rounded"
+              >
+                <div>
+                  <p className="font-semibold">{p.titulo}</p>
+                  <p className="text-sm text-gray-600">
+                    {GeneroPelicula[p.genero]} — {p.pais}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => eliminarPelicula(i)}
+                  className="text-red-600 font-bold"
+                >
+                  ✖
+                </button>
               </div>
             ))}
           </div>
+
         </div>
 
-        {/* COLUMNA DERECHA: FORMULARIO DEMO */}
-        <div className="lg:col-span-1 border-l pl-8 space-y-6">
-          <h2 className="text-xl font-bold text-red-600 border-b pb-2">
-            Añadir Ejemplo (No Funcional)
-          </h2>
-          <form className="space-y-4">
-            <label htmlFor="ejemplo" className="block text-gray-700 font-semibold">
-              Nombre del elemento
-            </label>
-            <div className="flex space-x-2">
-              <input 
-                type="text" 
-                id="ejemplo" 
-                placeholder="Ej: Nueva Animación" 
-                className="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500"
-              />
-              <button 
-                type="submit" 
-                className="py-2 px-4 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition duration-150"
-              >
-                Añadir
-              </button>
-            </div>
-            <p className="text-sm text-gray-500 italic">
-              Este formulario es solo demostrativo.
-            </p>
-          </form>
-        </div>
-
-      </div>
-
-      <div className="mt-4 text-sm text-gray-500">
-        <p>Vista del Ejercicio 2. Enumeraciones listas y listadas correctamente.</p>
       </div>
     </div>
   );
