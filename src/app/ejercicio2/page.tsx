@@ -64,18 +64,19 @@ export default function Ejercicio2() {
   // Efecto para CARGAR los datos del LocalStorage al iniciar la aplicación.
   // Se ejecuta una sola vez cuando el componente se monta (array de dependencias vacío []).
   useEffect(() => {
-    const data = localStorage.getItem("peliculas");
-    if (data) {
-      try {
-        // Convierto el string JSON recuperado de vuelta a un array de objetos Pelicula
-        const parsedData = JSON.parse(data) as Pelicula[];
-        setPeliculas(parsedData);
-      } catch (e) {
-        console.error("Error al leer del localStorage:", e);
+    const timer = setTimeout(() => {
+      setMounted(true);
+      const data = localStorage.getItem("peliculas");
+      if (data) {
+        try {
+          // Convierto el string JSON recuperado de vuelta a un array de objetos Pelicula
+          const parsedData = JSON.parse(data) as Pelicula[];
+          setPeliculas(parsedData);
+        } catch (e) {
+          console.error("Error al leer del localStorage:", e);
+        }
       }
-    }
-    // Delay setting mounted to avoid synchronous setState warning
-    const timer = setTimeout(() => setMounted(true), 0);
+    }, 0);
     return () => clearTimeout(timer);
   }, []);
 
