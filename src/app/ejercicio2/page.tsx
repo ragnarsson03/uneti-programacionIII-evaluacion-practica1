@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image"; // Importamos el componente Image de Next.js para optimizar las imágenes
 import { GeneroPelicula, PaisPelicula } from "./enums";
 
 /**
- * @description Interfaz que define la estructura de una Película.
+ * Definición de la estructura de una Película.
+ * Utilizo esta interfaz para asegurar que cada objeto película tenga obligatoriamente
+ * un título (texto), un género (del enum GeneroPelicula) y un país (del enum PaisPelicula).
  */
 type Pelicula = {
   titulo: string;
@@ -13,14 +16,17 @@ type Pelicula = {
 };
 
 /**
- * @description Helper para obtener las keys numéricas del enum GeneroPelicula
+ * Función auxiliar para obtener las claves del enum GeneroPelicula.
+ * Como GeneroPelicula es un enum numérico, TypeScript genera claves inversas (números).
+ * Aquí filtro para obtener solo los nombres (strings) y poder mostrarlos en el select.
  */
 function getGeneroKeys(): string[] {
   return Object.keys(GeneroPelicula).filter((key) => isNaN(Number(key)));
 }
 
 /**
- * @description Helper para obtener un color de fondo basado en el género
+ * Función para asignar un color de fondo diferente según el género de la película.
+ * Esto ayuda a diferenciar visualmente los elementos en la lista.
  */
 function getGeneroColor(genero: GeneroPelicula): string {
   switch (genero) {
@@ -36,77 +42,92 @@ function getGeneroColor(genero: GeneroPelicula): string {
 }
 
 export default function Ejercicio2() {
+  // Obtengo las listas de géneros y países para usarlas en los desplegables (selects)
   const generosKeys = getGeneroKeys();
   const paisesValues = Object.values(PaisPelicula);
 
-  // Estados
+  // Definición de Estados (Hooks)
+  // Estado para almacenar la lista de películas. Se inicializa como un array vacío.
   const [peliculas, setPeliculas] = useState<Pelicula[]>([]);
+
+  // Estados para los campos del formulario
   const [titulo, setTitulo] = useState("");
   const [genero, setGenero] = useState<GeneroPelicula>(GeneroPelicula.Accion);
   const [pais, setPais] = useState<PaisPelicula>(PaisPelicula.Venezuela);
+
+  // Estado para manejar mensajes de error (validaciones)
   const [error, setError] = useState("");
+
+  // Estado para controlar si el componente ya se montó en el cliente (evita errores de hidratación con LocalStorage)
   const [mounted, setMounted] = useState(false);
 
-  // Cargar desde LocalStorage al montar
+  // Efecto para CARGAR los datos del LocalStorage al iniciar la aplicación.
+  // Se ejecuta una sola vez cuando el componente se monta (array de dependencias vacío []).
   useEffect(() => {
     setMounted(true);
     const data = localStorage.getItem("peliculas");
     if (data) {
       try {
+        // Convierto el string JSON recuperado de vuelta a un array de objetos Pelicula
         const parsedData = JSON.parse(data) as Pelicula[];
         setPeliculas(parsedData);
       } catch (e) {
-        console.error("Error al parsear localStorage:", e);
+        console.error("Error al leer del localStorage:", e);
       }
     }
   }, []);
 
-  // Guardar en LocalStorage al cambiar peliculas
+  // Efecto para GUARDAR los datos en LocalStorage cada vez que la lista de películas cambia.
+  // Se ejecuta cada vez que el estado 'peliculas' o 'mounted' se actualiza.
   useEffect(() => {
     if (mounted) {
       localStorage.setItem("peliculas", JSON.stringify(peliculas));
     }
   }, [peliculas, mounted]);
 
+  // Función que se ejecuta al enviar el formulario
   const agregarPelicula = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Evito que la página se recargue
 
+    // Validación 1: El título no puede estar vacío
     if (titulo.trim() === "") {
       setError("El título no puede estar vacío");
       return;
     }
 
+    // Validación 2: No permitir películas duplicadas (mismo nombre)
     const existe = peliculas.some(
       (p) => p.titulo.toLowerCase() === titulo.toLowerCase()
     );
 
     if (existe) {
-      setError("Esa película ya existe");
+      setError("Esa película ya existe en la lista");
       return;
     }
 
+    // Creo el nuevo objeto película con los datos del formulario
     const nueva: Pelicula = {
       titulo,
       genero,
       pais,
     };
 
+    // Actualizo el estado agregando la nueva película al array existente
     setPeliculas([...peliculas, nueva]);
+
+    // Limpio el campo de título y el error
     setTitulo("");
-    // No reseteamos género/país para facilitar la entrada masiva, o sí?
-    // El requerimiento no especifica, pero resetear es un comportamiento estándar.
-    // setGenero(GeneroPelicula.Accion); 
-    // setPais(PaisPelicula.Venezuela);
     setError("");
   };
 
+  // Función para eliminar una película de la lista por su índice
   const eliminarPelicula = (index: number) => {
-    const copia = [...peliculas];
-    copia.splice(index, 1);
-    setPeliculas(copia);
+    const copia = [...peliculas]; // Creo una copia del array para no mutar el estado directamente
+    copia.splice(index, 1); // Elimino el elemento
+    setPeliculas(copia); // Actualizo el estado
   };
 
-  // Evitar renderizado en servidor para prevenir hydration mismatch con localStorage
+  // Si no está montado, renderizo un div vacío para evitar diferencias entre servidor y cliente
   if (!mounted) {
     return <div className="min-h-screen bg-white"></div>;
   }
@@ -115,27 +136,46 @@ export default function Ejercicio2() {
     <div className="min-h-screen bg-white flex items-center justify-center p-4 font-sans text-slate-800">
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-12">
 
-        {/* LADO IZQUIERDO: Bienvenida */}
+        {/* SECCIÓN IZQUIERDA: Bienvenida y Logos */}
         <div className="flex flex-col justify-center space-y-6">
-          <div className="flex items-center space-x-2">
-            {/* Logo simulado de Angular/Framework */}
-            <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-              A
-            </div>
-            <span className="text-2xl font-bold text-pink-600">UNETI</span>
+          <div className="flex items-center">
+            {/* Logos solicitados: Favicon y Next.js */}
+            <Image
+              src="/favicon.ico"
+              alt="Favicon"
+              width={80}
+              height={80}
+              className="w-20 h-20 mr-2"
+            />
+            <Image
+              src="/next.svg"
+              alt="Next.js Logo"
+              width={160}
+              height={160}
+              className="w-40 h-40"
+            />
           </div>
 
           <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-slate-900">
             Hola, Profesor <br />
-            Carlos Márquez 😎
+            Carlos Márquez😎
           </h1>
 
           <p className="text-lg text-slate-600">
             Felicitaciones, La app se está ejecutando.🧑🏻‍💻
           </p>
+
+          {/* Mostrar los Enums disponibles como pide el ejercicio 2 */}
+          <div className="mt-8 p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <h3 className="font-bold text-slate-700 mb-2">Datos disponibles (Enumeradas):</h3>
+            <div className="text-sm text-slate-600">
+              <p><span className="font-semibold">Géneros:</span> {generosKeys.join(", ")}</p>
+              <p className="mt-1"><span className="font-semibold">Países:</span> {paisesValues.join(", ")}</p>
+            </div>
+          </div>
         </div>
 
-        {/* LADO DERECHO: Formulario y Lista */}
+        {/* SECCIÓN DERECHA: Formulario y Lista de Películas */}
         <div className="border-l-2 border-pink-100 pl-8 md:pl-12 py-4 flex flex-col h-full">
 
           <div className="mb-8">
@@ -152,7 +192,7 @@ export default function Ejercicio2() {
                     className="flex-1 border-2 border-slate-200 rounded-full px-4 py-2 focus:outline-none focus:border-blue-500 transition-colors"
                   />
                   <button
-                    type="button" // Botón dummy para el estilo "Añadir" dentro del input visualmente, o al lado!!
+                    type="button"
                     onClick={agregarPelicula}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full transition-colors"
                   >
@@ -164,7 +204,7 @@ export default function Ejercicio2() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Género</label>
+                  <label className="text-xs text-slate-400 mb-1 block">Género (Enumerar)</label>
                   <select
                     value={genero}
                     onChange={(e) => setGenero(Number(e.target.value))}
@@ -176,7 +216,7 @@ export default function Ejercicio2() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400 mb-1 block">País</label>
+                  <label className="text-xs text-slate-400 mb-1 block">País (Enumerar)</label>
                   <select
                     value={pais}
                     onChange={(e) => setPais(e.target.value as PaisPelicula)}
@@ -192,7 +232,7 @@ export default function Ejercicio2() {
           </div>
 
           <div className="flex-1 overflow-y-auto pr-2">
-            <p className="text-xs text-slate-400 mb-4">Escribe el nombre completo de la película</p>
+            <p className="text-xs text-slate-400 mb-4">Listado de películas guardadas:</p>
 
             <div className="flex flex-wrap gap-3 content-start">
               {peliculas.map((p, i) => (
