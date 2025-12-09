@@ -1,37 +1,52 @@
-// app/page.tsx - Esta es la Página principal de la Evaluación (Menú) y es la ruta raíz "/" 
-// muy importante no eliminar ni modificar
+// src/app/page.tsx - Menú Principal
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   return (
-    // Aquí Usamos clases de Tailwind para un diseño simple y centrado
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center text-indigo-700 mb-6 border-b pb-2">
-          Evaluación Práctica 1 – Programación III
+    // Usa la misma altura calculada para centrar verticalmente debajo del Header
+    <div className="flex flex-col items-center justify-center bg-gray-100 p-8 min-h-[calc(100vh-4rem)]">
+      <div className="flex justify-center items-center mb-4">
+        <Image src="/favicon.ico" alt="Favicon" width={80} height={80} className="w-20 h-20 mr-2" />
+        <Image src="/next.svg" alt="Next.js Logo" width={160} height={160} className="w-40 h-40" />
+      </div>
+
+      <div className="bg-white p-10 rounded-xl shadow-2xl w-full max-w-lg text-center">
+
+        <h1 className="text-4xl font-extrabold text-indigo-700 mb-4">
+          Evaluación Práctica 1. Programación III
         </h1>
-        
-        <ul className="space-y-4">
-          <li>
-            {/* Enlace al Ejercicio 1 (Formulario) */}
-            <Link 
-              href="/ejercicio1" 
-              className="block bg-indigo-500 text-white py-3 px-4 rounded-lg text-center hover:bg-indigo-600 transition duration-150"
-            >
-              Ejercicio 1 – Node.js (Animal Favorito)
-            </Link>
-          </li>
-          
-          <li>
-            {/* Enlace al Ejercicio 2 (TypeScript Enums) */}
-            <Link 
-              href="/ejercicio2" 
-              className="block bg-green-500 text-white py-3 px-4 rounded-lg text-center hover:bg-green-600 transition duration-150"
-            >
-              Ejercicio 2 – TypeScript + Enumeraciones
-            </Link>
-          </li>
-        </ul>
+        <p className="text-xl text-gray-600 mb-10">
+
+          Hola👋🏻, Profesor Carlos Márquez,
+          <br></br>
+          Seleccione el ejercicio que desea visualizar.
+
+        </p>
+
+        <div className="space-y-4">
+
+          {/* Enlace al Ejercicio 1 */}
+          <Link
+            href="/ejercicio1"
+            className="block py-3 px-6 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition duration-150 shadow-md"
+          >
+            Ejercicio 1: Node.js (Interceptación y Recarga)
+          </Link>
+
+          {/* Enlace al Ejercicio 2 */}
+          <Link
+            href="/ejercicio2"
+            className="block py-3 px-6 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition duration-150 shadow-md"
+          >
+            Ejercicio 2: TypeScript (Enumeraciones)
+          </Link>
+
+        </div>
+
+      </div>
+      <div className="mt-4 text-sm text-gray-500">
+        <p>Desarrollado por Frederick Durán</p>
       </div>
     </div>
   );

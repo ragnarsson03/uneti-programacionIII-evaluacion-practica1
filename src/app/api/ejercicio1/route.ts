@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     if (!animal) {
         // Si el campo está vacío, redirigimos al usuario de vuelta al formulario principal
         // El 'request.url' asegura que la redirección sea correcta, aunque sea un error 400.
-        return NextResponse.redirect(new URL('/ejercicio1', request.url));
+       return NextResponse.redirect(new URL('/ejercicio1', request.url));
     }
 
     // Paso 3: Procesamiento y Preparación de Recarga (Redirección)
