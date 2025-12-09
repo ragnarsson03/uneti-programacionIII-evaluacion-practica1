@@ -1,94 +1,97 @@
+## 👨‍🏫 Docente
+
+-   **Profesor:** Carlos Márquez
+-   **Institución:** UNETI
+
+## 👨🏻‍💻 Desarrollado por
+
+-   **Frederick Durán**
+
 <div align="center">
   <img src="uneti-logotipo.png" alt="Logo UNETI" width="200"/>
 </div>
 
 <h1 align="center">Evaluación Práctica 1 – Programación III (UNETI – 2025-2)</h1>
 
-Este repositorio contiene el desarrollo de los dos ejercicios solicitados en la Evaluación Práctica 1 de la Unidad Curricular Programación III. El proyecto está organizado en directorios independientes para mantener una separación clara entre cada actividad.
+Este repositorio contiene el desarrollo de la Evaluación Práctica 1 de la Unidad Curricular Programación III. El proyecto ha sido unificado en una sola aplicación moderna utilizando **Next.js 15**, integrando tanto la lógica del servidor como la del cliente en un mismo entorno robusto y eficiente.
 
 ---
 
-## 📂 Estructura General del Repositorio
+## Estructura General del Repositorio
+
+El proyecto utiliza la estructura recomendada de **App Router** de Next.js:
 
 ```
 .
-├── ejercicio1-node.js/   # Aplicación web con Node.js, Express y EJS
-├── ejercicio2-typescript/  # Lógica de negocio con TypeScript y Vite
-├── uneti-logotipo.png      # Logotipo de la institución
-└── README.md               # Este archivo
+├── src/
+│   ├── app/
+│   │   ├── api/            # Route Handlers (Backend Serverless)
+│   │   ├── ejercicio1/     # Vista del Ejercicio 1 (Formulario)
+│   │   ├── ejercicio2/     # Vista del Ejercicio 2 (Lógica Cliente)
+│   │   └── page.tsx        # Menú Principal
+└── public/                 # Recursos estáticos
 ```
 
 ---
 
-## 🚀 Ejercicio 1 – Node.js + Express + TypeScript + EJS
+## 🚀 Ejercicio 1 – Node.js (Route Handlers)
 
-Aplicación web simple que presenta un formulario donde el usuario puede ingresar su animal favorito. Al enviarlo, el servidor procesa la información y muestra el resultado en una nueva página renderizada dinámicamente con EJS.
+Este ejercicio demuestra el procesamiento de datos del lado del servidor utilizando **Next.js Route Handlers**, eliminando la necesidad de un servidor Express separado.
 
-### 🛠️ Tecnologías Utilizadas
+### 📝 Descripción
+El usuario ingresa su animal favorito en un formulario HTML. Al enviarlo, los datos son interceptados por una ruta de API (`/api/ejercicio1`), que procesa la solicitud (POST) y retorna una respuesta dinámica, simulando el comportamiento de un backend tradicional pero con arquitectura moderna.
 
--   **Node.js:** Entorno de ejecución de JavaScript del lado del servidor.
--   **Express:** Framework web minimalista para Node.js, utilizado para gestionar rutas y middlewares.
--   **TypeScript:** Superset de JavaScript que añade tipado estático para un desarrollo más robusto.
--   **EJS (Embedded JavaScript):** Es un Motor de plantillas que permite generar HTML dinámico incrustando código JavaScript.
+### 🛠️ Tecnologías
+-   **Next.js API Routes:** Manejo de solicitudes HTTP (GET, POST).
+-   **Server-Side Logic:** Procesamiento de formularios en el servidor.
+-   **HTML Forms:** Interacción nativa sin JavaScript del lado del cliente.
 
+---
 
--    **¿Por qué usar EJS?**
-Facilidad de integración: Se integra muy bien con aplicaciones que ya utilizan Node.js y Express.js.
+## 🔬 Ejercicio 2 – TypeScript + React Hooks
 
+Este ejercicio se enfoca en la interactividad del lado del cliente, utilizando el poder de React y el tipado estático de TypeScript.
 
-### ⚙️ Instalación y Ejecución
+### 📝 Descripción
+Una aplicación "Single Page" que permite gestionar una lista de películas. Implementa:
+1.  **Enumeraciones (Enums):** Para clasificar estrictamente géneros y países.
+2.  **Persistencia:** Uso de `localStorage` para guardar los datos en el navegador.
+3.  **Validaciones:** Prevención de duplicados y campos vacíos.
+4.  **UI Dinámica:** Listado coloreado según el género de la película.
 
-1.  **Navegar al directorio del backend:**
-    ```bash
-    cd ejercicio1-node.js/backend
-    ```
+### 🛠️ Tecnologías
+-   **TypeScript Enums:** Tipado fuerte para datos categóricos.
+-   **React Hooks:** `useState` para gestión de estado y `useEffect` para el ciclo de vida y persistencia.
+-   **Client Components:** Renderizado interactivo en el navegador.
 
-2.  **Instalar dependencias:**
+---
+
+## 🛠️ Stack Tecnológico Completo
+
+El proyecto ha sido modernizado dejando atrás EJS y Express puros para utilizar un stack de última generación:
+
+-   **Framework:** [Next.js 15](https://nextjs.org/) (App Router)
+-   **Lenguaje:** [TypeScript](https://www.typescriptlang.org/)
+-   **Estilos:** [Tailwind CSS](https://tailwindcss.com/)
+-   **Iconos:** [Lucide React](https://lucide.dev/)
+-   **Linting:** ESLint
+
+---
+
+## ⚙️ Instalación y Ejecución
+
+1.  **Instalar dependencias:**
     ```bash
     npm install
     ```
 
-3.  **Ejecutar el servidor en modo de desarrollo:**
-    El servidor se iniciará en `http://localhost:3000` y se reiniciará automáticamente con cada cambio.
+2.  **Ejecutar el servidor de desarrollo:**
     ```bash
     npm run dev
     ```
 
----
-
-## 🔬 Ejercicio 2 – TypeScript + Vite
-
-Proyecto que implementa enumeraciones (`enums`) en TypeScript para representar y clasificar géneros y países de películas, mostrando los resultados directamente en la consola del navegador.
-
-### 🛠️ Tecnologías Utilizadas
-
--   **TypeScript:** Utilizado para definir los `enums` y la lógica de la aplicación.
--   **Vite:** Herramienta de desarrollo frontend moderna que proporciona un servidor de desarrollo rápido y empaqueta el código para producción.
+3.  **Abrir la aplicación:**
+    Visita `http://localhost:3000` en tu navegador.
 
 ---
 
-
-## 🧩 Implementación Serverless en Vercel (Versión final del Ejercicio 1)
-
-El ejercicio se ejecuta dentro de:
-
-/api/animal.ts
-
-Esto permite:
-- Manejo de formularios  
-- Renderizado dinámico básico  
-- Ejecución sin servidor dedicado  
-
----
-
-
-
-
-## 👨‍🏫 Docente
-
--   **Profesor:** Carlos Márquez
--   **Institución:** UNETI
-
-## Estudiante
-
--   Frederick Durán 👨🏻‍💻
