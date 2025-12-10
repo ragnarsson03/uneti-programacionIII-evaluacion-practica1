@@ -51,15 +51,19 @@ export default function Ejercicio2() {
 
   // --- Efectos (Carga y Guardado en LocalStorage) ---
   useEffect(() => {
-    setMounted(true);
-    const data = localStorage.getItem("peliculas");
-    if (data) {
-      try {
-        setPeliculas(JSON.parse(data));
-      } catch (e) {
-        console.error("Error parsing localStorage", e);
+    // Usamos setTimeout para evitar el error de actualización síncrona en useEffect
+    const timer = setTimeout(() => {
+      setMounted(true);
+      const data = localStorage.getItem("peliculas");
+      if (data) {
+        try {
+          setPeliculas(JSON.parse(data));
+        } catch (e) {
+          console.error("Error parsing localStorage", e);
+        }
       }
-    }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
