@@ -1,14 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image"; // Importamos el componente Image de Next.js para optimizar las imágenes
+import Image from "next/image";
 import { GeneroPelicula, PaisPelicula } from "./enums";
+import Link from 'next/link';
 
-/**
- * Definición de la estructura de una Película.
- * Utilizo esta interfaz para asegurar que cada objeto película tenga obligatoriamente
- * un título (texto), un género (del enum GeneroPelicula) y un país (del enum PaisPelicula).
- */
+// Definición de tipos
 type Pelicula = {
   titulo: string;
   genero: GeneroPelicula;
@@ -16,252 +13,288 @@ type Pelicula = {
 };
 
 /**
- * Función auxiliar para obtener las claves del enum GeneroPelicula.
- * Como GeneroPelicula es un enum numérico, TypeScript genera claves inversas (números).
- * Aquí filtro para obtener solo los nombres (strings) y poder mostrarlos en el select.
+ * Helper para extraer las keys numéricas del Enum GeneroPelicula
+ * como strings legibles.
  */
 function getGeneroKeys(): string[] {
   return Object.keys(GeneroPelicula).filter((key) => isNaN(Number(key)));
 }
 
 /**
- * Función para asignar un color de fondo diferente según el género de la película.
- * Esto ayuda a diferenciar visualmente los elementos en la lista.
+ * Retorna estilos de badge según el género.
  */
-function getGeneroColor(genero: GeneroPelicula): string {
+function getGeneroBadgeStyles(genero: GeneroPelicula): string {
   switch (genero) {
-    case GeneroPelicula.Accion: return "bg-red-100 text-red-800";
-    case GeneroPelicula.Comedia: return "bg-yellow-100 text-yellow-800";
-    case GeneroPelicula.Drama: return "bg-blue-100 text-blue-800";
-    case GeneroPelicula.CienciaFiccion: return "bg-purple-100 text-purple-800";
-    case GeneroPelicula.Terror: return "bg-gray-800 text-gray-100";
-    case GeneroPelicula.Documental: return "bg-green-100 text-green-800";
-    case GeneroPelicula.Animacion: return "bg-pink-100 text-pink-800";
-    default: return "bg-gray-100 text-gray-800";
+    case GeneroPelicula.Accion: return "bg-red-100 text-red-700 border-red-200";
+    case GeneroPelicula.Comedia: return "bg-yellow-100 text-yellow-700 border-yellow-200";
+    case GeneroPelicula.Drama: return "bg-blue-100 text-blue-700 border-blue-200";
+    case GeneroPelicula.CienciaFiccion: return "bg-purple-100 text-purple-700 border-purple-200";
+    case GeneroPelicula.Terror: return "bg-gray-800 text-gray-100 border-gray-700";
+    case GeneroPelicula.Documental: return "bg-emerald-100 text-emerald-700 border-emerald-200";
+    case GeneroPelicula.Animacion: return "bg-pink-100 text-pink-700 border-pink-200";
+    default: return "bg-gray-100 text-gray-700 border-gray-200";
   }
 }
 
 export default function Ejercicio2() {
-  // Obtengo las listas de géneros y países para usarlas en los desplegables (selects)
-  const generosKeys = getGeneroKeys();
-  const paisesValues = Object.values(PaisPelicula);
-
-  // Definición de Estados (Hooks)
-  // Estado para almacenar la lista de películas. Se inicializa como un array vacío.
+  // --- Estados ---
   const [peliculas, setPeliculas] = useState<Pelicula[]>([]);
-
-  // Estados para los campos del formulario
   const [titulo, setTitulo] = useState("");
   const [genero, setGenero] = useState<GeneroPelicula>(GeneroPelicula.Accion);
   const [pais, setPais] = useState<PaisPelicula>(PaisPelicula.Venezuela);
-
-  // Estado para manejar mensajes de error (validaciones)
   const [error, setError] = useState("");
-
-  // Estado para controlar si el componente ya se montó en el cliente (evita errores de hidratación con LocalStorage)
   const [mounted, setMounted] = useState(false);
 
-  // Efecto para CARGAR los datos del LocalStorage al iniciar la aplicación.
-  // Se ejecuta una sola vez cuando el componente se monta (array de dependencias vacío []).
+  // Datos para selects
+  const generosKeys = getGeneroKeys();
+  const paisesValues = Object.values(PaisPelicula);
+
+  // --- Efectos (Carga y Guardado en LocalStorage) ---
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-      const data = localStorage.getItem("peliculas");
-      if (data) {
-        try {
-          // Convierto el string JSON recuperado de vuelta a un array de objetos Pelicula
-          const parsedData = JSON.parse(data) as Pelicula[];
-          setPeliculas(parsedData);
-        } catch (e) {
-          console.error("Error al leer del localStorage:", e);
-        }
+    setMounted(true);
+    const data = localStorage.getItem("peliculas");
+    if (data) {
+      try {
+        setPeliculas(JSON.parse(data));
+      } catch (e) {
+        console.error("Error parsing localStorage", e);
       }
-    }, 0);
-    return () => clearTimeout(timer);
+    }
   }, []);
 
-  // Efecto para GUARDAR los datos en LocalStorage cada vez que la lista de películas cambia.
-  // Se ejecuta cada vez que el estado 'peliculas' o 'mounted' se actualiza.
   useEffect(() => {
     if (mounted) {
       localStorage.setItem("peliculas", JSON.stringify(peliculas));
     }
   }, [peliculas, mounted]);
 
-  // Función que se ejecuta al enviar el formulario
+  // --- Handlers ---
   const agregarPelicula = (e: React.FormEvent) => {
-    e.preventDefault(); // Evito que la página se recargue
-
-    // Validación 1: El título no puede estar vacío
-    if (titulo.trim() === "") {
-      setError("El título no puede estar vacío");
+    e.preventDefault();
+    if (!titulo.trim()) {
+      setError("El título es obligatorio.");
       return;
     }
-
-    // Validación 2: No permitir películas duplicadas (mismo nombre)
-    const existe = peliculas.some(
-      (p) => p.titulo.toLowerCase() === titulo.toLowerCase()
-    );
-
+    const existe = peliculas.some(p => p.titulo.toLowerCase() === titulo.toLowerCase());
     if (existe) {
-      setError("Esa película ya existe en la lista");
+      setError("Esta película ya está registrada.");
       return;
     }
 
-    // Creo el nuevo objeto película con los datos del formulario
-    const nueva: Pelicula = {
-      titulo,
-      genero,
-      pais,
-    };
-
-    // Actualizo el estado agregando la nueva película al array existente
+    const nueva: Pelicula = { titulo, genero, pais };
     setPeliculas([...peliculas, nueva]);
-
-    // Limpio el campo de título y el error
     setTitulo("");
     setError("");
   };
 
-  // Función para eliminar una película de la lista por su índice
   const eliminarPelicula = (index: number) => {
-    const copia = [...peliculas]; // Creo una copia del array para no mutar el estado directamente
-    copia.splice(index, 1); // Elimino el elemento
-    setPeliculas(copia); // Actualizo el estado
+    const copia = [...peliculas];
+    copia.splice(index, 1);
+    setPeliculas(copia);
   };
 
-  // Si no está montado, renderizo un div vacío para evitar diferencias entre servidor y cliente
-  if (!mounted) {
-    return <div className="min-h-screen bg-white"></div>;
-  }
+  // Evitar Hydration Mismatch
+  if (!mounted) return <div className="min-h-screen bg-white"></div>;
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4 font-sans text-slate-800">
-      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-12">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 flex flex-col">
 
-        {/* SECCIÓN IZQUIERDA: Bienvenida y Logos */}
-        <div className="flex flex-col justify-center space-y-6">
-          <div className="flex items-center">
-            {/* Logos solicitados: Favicon y Next.js */}
-            <Image
-              src="/favicon.ico"
-              alt="Favicon"
-              width={80}
-              height={80}
-              className="w-20 h-20 mr-2"
-            />
-            <Image
-              src="/next.svg"
-              alt="Next.js Logo"
-              width={160}
-              height={160}
-              className="w-40 h-40"
-            />
-          </div>
+      <main className="flex-grow flex items-center justify-center p-6 md:p-12">
+        <div className="w-full max-w-7xl bg-white rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-5 min-h-[800px]">
 
-          <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-slate-900">
-            Hola, Profesor <br />
-            Carlos Márquez😎
-          </h1>
+          {/* COLUMNA IZQUIERDA: Bienvenida e Información */}
+          <div className="lg:col-span-2 bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 p-10 text-white flex flex-col justify-between relative overflow-hidden">
+            {/* Círculos decorativos de fondo */}
+            <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white/5 blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-blue-500/10 blur-3xl"></div>
 
-          <p className="text-lg text-slate-600">
-            Felicitaciones, La app se está ejecutando.🧑🏻‍💻
-          </p>
-
-          {/* Mostrar los Enums disponibles como pide el ejercicio 2 */}
-          <div className="mt-8 p-4 bg-slate-50 rounded-lg border border-slate-200">
-            <h3 className="font-bold text-slate-700 mb-2">Datos disponibles (Enumeradas):</h3>
-            <div className="text-sm text-slate-600">
-              <p><span className="font-semibold">Géneros:</span> {generosKeys.join(", ")}</p>
-              <p className="mt-1"><span className="font-semibold">Países:</span> {paisesValues.join(", ")}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* SECCIÓN DERECHA: Formulario y Lista de Películas */}
-        <div className="border-l-2 border-pink-100 pl-8 md:pl-12 py-4 flex flex-col h-full">
-
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6 text-slate-900">Añade una nueva película</h2>
-
-            <form onSubmit={agregarPelicula} className="space-y-4">
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm text-slate-500 font-medium">Nombre de la película</label>
-                <div className="flex space-x-2">
-                  <input
-                    value={titulo}
-                    onChange={(e) => setTitulo(e.target.value)}
-                    placeholder="Ej: Jurassic Park"
-                    className="flex-1 border-2 border-slate-200 rounded-full px-4 py-2 focus:outline-none focus:border-blue-500 transition-colors"
-                  />
-                  <button
-                    type="button"
-                    onClick={agregarPelicula}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full transition-colors"
-                  >
-                    Añadir
-                  </button>
+            <div className="relative z-10">
+              <div className="flex gap-4 mb-8">
+                <div className="bg-white/10 p-3 rounded-2xl backdrop-blur-sm border border-white/10">
+                  <Image src="/favicon.ico" alt="Logo" width={40} height={40} className="w-10 h-10 object-contain" />
                 </div>
-                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Género (Enumerar)</label>
-                  <select
-                    value={genero}
-                    onChange={(e) => setGenero(Number(e.target.value))}
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
-                  >
+              <h1 className="text-5xl font-black leading-tight mb-6">
+                Manejo de <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-300">
+                  Películas
+                </span>
+                <br /> con Enums
+              </h1>
+
+              <p className="text-blue-200 text-lg font-light leading-relaxed mb-10">
+                Ejercicio práctico para demostrar el uso de TypeScript Enums y persistencia LocalStorage en una interfaz moderna.
+              </p>
+
+              <div className="space-y-6">
+                <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-md">
+                  <h3 className="text-xs font-bold text-blue-300 uppercase tracking-widest mb-3">Géneros Disponibles</h3>
+                  <div className="flex flex-wrap gap-2">
                     {generosKeys.map((g, i) => (
-                      <option key={i} value={i}>{g}</option>
+                      <span key={i} className="px-3 py-1 bg-white/10 rounded-full text-xs text-blue-100 border border-white/5 hover:bg-white/20 transition-colors cursor-default">
+                        {g}
+                      </span>
                     ))}
-                  </select>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-xs text-slate-400 mb-1 block">País (Enumerar)</label>
-                  <select
-                    value={pais}
-                    onChange={(e) => setPais(e.target.value as PaisPelicula)}
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
-                  >
+
+                <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-md">
+                  <h3 className="text-xs font-bold text-teal-300 uppercase tracking-widest mb-3">Países Disponibles</h3>
+                  <div className="flex flex-wrap gap-2">
                     {paisesValues.map((p, i) => (
-                      <option key={i} value={p}>{p}</option>
+                      <span key={i} className="px-3 py-1 bg-white/10 rounded-full text-xs text-teal-100 border border-white/5 hover:bg-white/20 transition-colors cursor-default">
+                        {p}
+                      </span>
                     ))}
-                  </select>
+                  </div>
                 </div>
               </div>
-            </form>
-          </div>
+            </div>
 
-          <div className="flex-1 overflow-y-auto pr-2">
-            <p className="text-xs text-slate-400 mb-4">Listado de películas guardadas:</p>
-
-            <div className="flex flex-wrap gap-3 content-start">
-              {peliculas.map((p, i) => (
-                <div
-                  key={i}
-                  className={`group relative px-4 py-2 rounded-full font-medium text-sm cursor-default transition-all hover:shadow-md flex items-center gap-2 ${getGeneroColor(p.genero)}`}
-                  title={`${GeneroPelicula[p.genero]} - ${p.pais}`}
-                >
-                  <span>{p.titulo}</span>
-                  <button
-                    onClick={() => eliminarPelicula(i)}
-                    className="opacity-0 group-hover:opacity-100 text-current hover:text-red-600 font-bold transition-opacity"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-
-              {peliculas.length === 0 && (
-                <p className="text-slate-300 italic">No hay películas añadidas aún.</p>
-              )}
+            <div className="relative z-10 pt-10">
+              <p className="text-sm text-blue-400/80">Profesor Carlos Márquez 😎</p>
             </div>
           </div>
 
+          {/* COLUMNA DERECHA: App Funcional */}
+          <div className="lg:col-span-3 bg-white p-10 flex flex-col">
+
+            {/* Header Formulario */}
+            <div className="mb-10">
+              <h2 className="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                <span className="w-2 h-8 bg-blue-600 rounded-full inline-block"></span>
+                Nueva Película
+              </h2>
+
+              <form onSubmit={agregarPelicula} className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                <div className="flex flex-col gap-5">
+
+                  {/* Input Título */}
+                  <div className="group">
+                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-focus-within:text-blue-600 transition-colors">Título del film</label>
+                    <input
+                      value={titulo}
+                      onChange={(e) => setTitulo(e.target.value)}
+                      placeholder="Ej: Interestelar"
+                      className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 font-medium text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder-slate-300"
+                    />
+                  </div>
+
+                  {/* Selects Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="group">
+                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-focus-within:text-blue-600 transition-colors">Género</label>
+                      <div className="relative">
+                        <select
+                          value={genero}
+                          onChange={(e) => setGenero(Number(e.target.value))}
+                          className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 font-medium text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all appearance-none cursor-pointer"
+                        >
+                          {generosKeys.map((g, i) => (
+                            <option key={i} value={i}>{g}</option>
+                          ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none text-slate-400">
+                          ▼
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="group">
+                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-focus-within:text-blue-600 transition-colors">País de origen</label>
+                      <div className="relative">
+                        <select
+                          value={pais}
+                          onChange={(e) => setPais(e.target.value as PaisPelicula)}
+                          className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 font-medium text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all appearance-none cursor-pointer"
+                        >
+                          {paisesValues.map((p, i) => (
+                            <option key={i} value={p}>{p}</option>
+                          ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none text-slate-400">
+                          ▼
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Botón y Error */}
+                  <div className="flex items-center justify-between mt-2">
+                    {error ? (
+                      <span className="text-red-500 text-sm font-medium animate-pulse">⚠ {error}</span>
+                    ) : (
+                      <span></span>
+                    )}
+                    <button
+                      type="submit"
+                      className="bg-slate-900 text-white font-bold py-3 px-8 rounded-xl hover:bg-blue-600 transform transition-all hover:scale-105 active:scale-95 shadow-lg hover:shadow-blue-500/30"
+                    >
+                      + Agregar a la lista
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            {/* Lista de Películas */}
+            <div className="flex-grow flex flex-col min-h-0">
+              <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center justify-between">
+                <span>Mi Colección</span>
+                <span className="text-xs bg-slate-100 text-slate-500 py-1 px-3 rounded-full">{peliculas.length} películas</span>
+              </h2>
+
+              <div className="flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar flex-grow">
+                {peliculas.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-slate-300 border-2 border-dashed border-slate-200 rounded-2xl">
+                    <p className="text-4xl mb-2">🎬</p>
+                    <p>Tu colección está vacía</p>
+                  </div>
+                ) : (
+                  peliculas.map((p, i) => (
+                    <div key={i} className="group flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all hover:border-blue-200">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-lg shadow-sm ${getGeneroBadgeStyles(p.genero).split(' ')[0]}`}>
+                          {/* Icono simple basado en la primera letra del género */}
+                          {GeneroPelicula[p.genero][0]}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-slate-800">{p.titulo}</h3>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${getGeneroBadgeStyles(p.genero)}`}>
+                              {GeneroPelicula[p.genero]}
+                            </span>
+                            <span className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md border border-slate-200">
+                              {p.pais}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => eliminarPelicula(i)}
+                        className="text-slate-300 hover:text-red-500 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                        title="Eliminar"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+          </div>
         </div>
-      </div>
+      </main>
+
+      {/* Footer Global para esta página */}
+      <footer className="text-center py-6 text-slate-400 text-sm font-medium">
+        Desarrollado por Frederick Durán =) | <Link href="/" className="hover:text-blue-500 transition-colors">Volver al Inicio</Link>
+      </footer>
+
     </div>
   );
 }

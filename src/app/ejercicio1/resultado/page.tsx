@@ -1,5 +1,10 @@
 // app/ejercicio1/resultado/page.tsx - Vista 2: Archivo que muestra el resultado
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Resultado | Ejercicio 1',
+};
 
 export default async function Ejercicio1Resultado({
     searchParams,
@@ -7,35 +12,54 @@ export default async function Ejercicio1Resultado({
     searchParams: Promise<{ animal?: string }>
 }) {
 
+    // Extraemos el parámetro 'animal' que viene de la URL (enviado por la redirección de Node.js)
     const { animal } = await searchParams;
+    // Si no hay animal, mostramos un fallback
     const value = animal ?? "No especificado";
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-            <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md text-center">
-                
-                <h1 className="text-4xl font-extrabold text-green-600 mb-4">
-                    ¡Resultado Procesado!
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-white-500 via-teal-500 to-white-500 p-6">
+            <div className="bg-white/95 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-lg text-center transform transition-all hover:scale-[1.02] duration-300">
+
+                <div className="mb-6 flex justify-center">
+                    <div className="p-4 bg-green-100 rounded-full">
+                        <span className="text-4xl">✅</span>
+                    </div>
+                </div>
+
+                <h1 className="text-3xl font-extrabold text-gray-800 mb-2">
+                    ¡Interceptado con Éxito!
                 </h1>
 
-                <p className="text-xl text-gray-700 mb-8">
-                    El animal favorito que fue interceptado por Node.js es:
+                <p className="text-gray-500 font-medium mb-8">
+                    El servidor Node.js procesó la solicitud.
                 </p>
 
-                <h2 className="text-5xl font-black text-indigo-700 break-words mb-8">
-                    {value}
-                </h2>
+                <div className="bg-gray-50 rounded-2xl p-8 mb-8 border border-gray-100 shadow-inner">
+                    <p className="text-sm text-gray-400 uppercase tracking-widest font-bold mb-3">
+                        Tu Animal Favorito es
+                    </p>
+                    <h2 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 break-words drop-shadow-sm">
+                        {value}
+                    </h2>
+                </div>
 
-                <Link 
+                <Link
                     href="/ejercicio1"
-                    className="inline-block py-2 px-6 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150"
+                    className="inline-flex items-center justify-center w-full py-3 px-6 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition-all duration-300 shadow-xl hover:shadow-2xl"
                 >
-                    Volver al Formulario
+                    ↩ Probar con otro animal
                 </Link>
             </div>
-            <div className="mt-4 text-sm text-gray-500">
-                <p>Vista 2 (Resultado)</p>
-            </div>
+
+            <footer className="mt-12 text-center text-white/90 font-medium tracking-wide">
+                <p className="drop-shadow-md mb-2">
+                    Desarrollado por Frederick Durán =)
+                </p>
+                <p className="text-xs text-white/60">
+                    Vista 2 (Resultado Procesado)
+                </p>
+            </footer>
         </div>
     );
 }
