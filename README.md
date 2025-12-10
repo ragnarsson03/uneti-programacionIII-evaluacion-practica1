@@ -91,7 +91,7 @@ El proyecto ha sido modernizado dejando atrás EJS y Express puros para utilizar
     ```
 
 3.  **Abrir la aplicación:**
-    Visita `http://localhost:3000` en tu navegador.
+    Visita `http://localhost:3000` en el navegador.
 
 ---
 
