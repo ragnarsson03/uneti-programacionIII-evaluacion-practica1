@@ -1,4 +1,4 @@
-// app/ejercicio1/page.tsx - Vista 1: Formulario - Ruta del ejercicio1
+// app/ejercicio1/page.tsx - Vista 1: Formulario
 import Link from 'next/link';
 import { Metadata } from 'next';
 
@@ -7,12 +7,19 @@ export const metadata: Metadata = {
   description: 'Formulario para enviar tu animal favorito al servidor.',
 };
 
+/**
+ * @fileoverview Vista del Formulario (Ejercicio 1)
+ * @description Esta es la primera parte del ejercicio 1.
+ * Muestra un formulario sencillo que pide un "Animal Favorito".
+ * 
+ * LO IMPORTANTE AQUÍ:
+ * El formulario usa la propiedad 'action="/api/ejercicio1"'.
+ * Esto significa que cuando le das al botón enviar, los datos viajan
+ * directamente a nuestro servidor Node.js (Route Handler) para ser procesados.
+ * 
+ * @author Frederick Durán
+ */
 export default function Ejercicio1Formulario() {
-  /**
-   * Vista Principal del Ejercicio 1.
-   * Muestra un formulario estilizado para capturar el animal favorito del usuario.
-   * Los datos se envían vía POST a nuestra API en Node.js (route.ts).
-   */
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
       <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-lg border border-gray-100">
@@ -28,7 +35,11 @@ export default function Ejercicio1Formulario() {
           Ingresa el nombre de su <span className="font-bold text-blue-600">animal favorito</span> para procesarlo en el servidor Node.js.
         </p>
 
-        {/* Formulario que apunta al Route Handler (Node.js) */}
+        {/* 
+          AQUÍ ESTÁ LA MAGIA: 
+          action="/api/ejercicio1" -> Envía los datos a la API
+          method="POST" -> Método HTTP seguro para enviar datos
+        */}
         <form
           action="/api/ejercicio1"
           method="POST"
@@ -56,7 +67,7 @@ export default function Ejercicio1Formulario() {
           </button>
         </form>
 
-        {/* Sección de Ejemplos */}
+        {/* Sección decorativa con ejemplos */}
         <div className="mt-10 pt-6 border-t border-gray-200">
           <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Ejemplos válidos:</h3>
           <div className="flex flex-wrap gap-2 text-sm text-gray-600">
@@ -68,7 +79,6 @@ export default function Ejercicio1Formulario() {
 
       </div>
 
-      {/* Footer Requerido */}
       <footer className="mt-12 text-center text-gray-500 font-medium">
         <p className="mb-2">
           Desarrollado por Frederick Durán =)
