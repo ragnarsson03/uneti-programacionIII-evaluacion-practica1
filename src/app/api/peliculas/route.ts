@@ -25,6 +25,7 @@ type Pelicula = {
  * Es una simple variable array [] que vive en el servidor.
  * Mientras el servidor no se apague, los datos siguen aquí.
  */
+// eslint-disable-next-line prefer-const -- Usamos let porque modificamos el array con push y splice
 let peliculasEnMemoria: Pelicula[] = [];
 
 /**
@@ -119,6 +120,7 @@ export async function DELETE(request: NextRequest) {
 
         return NextResponse.json({ success: true, message: "Película borrada" });
     } catch (error) {
+        console.error("Error al intentar borrar:", error);
         return NextResponse.json(
             { error: "Error al intentar borrar" },
             { status: 500 }
