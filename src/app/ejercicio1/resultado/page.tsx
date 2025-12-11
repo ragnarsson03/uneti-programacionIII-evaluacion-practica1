@@ -1,4 +1,4 @@
-// app/ejercicio1/resultado/page.tsx - Vista 2: Archivo que muestra el resultado
+// app/ejercicio1/resultado/page.tsx - Vista 2: Resultado
 import Link from 'next/link';
 import { Metadata } from 'next';
 
@@ -6,15 +6,27 @@ export const metadata: Metadata = {
     title: 'Resultado | Ejercicio 1',
 };
 
+/**
+ * @fileoverview Vista de Resultado (Ejercicio 1)
+ * @description Esta página es la que el usuario ve DESPUÉS de enviar el formulario.
+ * 
+ * ¿Cómo funciona?
+ * 1. El servidor recibe el animal.
+ * 2. El servidor redirige a esta página enviando el dato en la URL (Query Param).
+ * 3. Esta página lee ese dato de la URL y lo muestra en pantalla.
+ * 
+ * @author Frederick Durán
+ */
 export default async function Ejercicio1Resultado({
     searchParams,
 }: {
     searchParams: Promise<{ animal?: string }>
 }) {
 
-    // Extraemos el parámetro 'animal' que viene de la URL (enviado por la redirección de Node.js)
+    // Leemos los parámetros que vienen en la URL (ej: ?animal=Leon)
     const { animal } = await searchParams;
-    // Si no hay animal, mostramos un fallback
+
+    // Si por alguna razón no viene el animal, mostramos un texto por defecto
     const value = animal ?? "No especificado";
 
     return (
@@ -32,14 +44,15 @@ export default async function Ejercicio1Resultado({
                 </h1>
 
                 <p className="text-gray-500 font-medium mb-8">
-                    El servidor Node.js procesó la solicitud.
+                    El servidor Node.js procesó la solicitud correctamente.
                 </p>
 
                 <div className="bg-blue-50 rounded-2xl p-8 mb-8 border border-blue-100">
                     <p className="text-sm text-blue-500 uppercase tracking-widest font-bold mb-3">
                         Tu Animal Favorito es
                     </p>
-                    <h2 className="text-4xl font-black text-blue-700 break-words">
+                    {/* Aquí mostramos el valor que interceptamos */}
+                    <h2 className="text-4xl font-black text-blue-700 break-words capitalize">
                         {value}
                     </h2>
                 </div>
