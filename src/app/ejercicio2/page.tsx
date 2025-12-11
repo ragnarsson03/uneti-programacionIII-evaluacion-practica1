@@ -1,13 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image"; // Importamos el componente Image de Next.js para optimizar las imágenes
+import { useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import { GeneroPelicula, PaisPelicula } from "./enums";
 
 /**
- * Definición de la estructura de una Película.
- * Utilizo esta interfaz para asegurar que cada objeto película tenga obligatoriamente
- * un título (texto), un género (del enum GeneroPelicula) y un país (del enum PaisPelicula).
+ * @fileoverview Componente principal del Ejercicio 2.
+ * @description Este componente implementa:
+ * 1. Un formulario para registrar películas (título, género, país)
+ * 2. Almacenamiento temporal en memoria del servidor (vía API)
+ * 3. Una tabla que muestra las películas con Título, Género y País
+ * 
+ * Las películas se guardan en la memoria del servidor mientras este esté activo.
+ * Al reiniciar el servidor, la lista se vacía.
+ * 
+ * @author Frederick Durán
+ */
+
+/**
+ * Interfaz que define la estructura de una Película.
  */
 type Pelicula = {
   titulo: string;
@@ -16,17 +27,14 @@ type Pelicula = {
 };
 
 /**
- * Función auxiliar para obtener las claves del enum GeneroPelicula.
- * Como GeneroPelicula es un enum numérico, TypeScript genera claves inversas (números).
- * Aquí filtro para obtener solo los nombres (strings) y poder mostrarlos en el select.
+ * Obtiene las claves del enum GeneroPelicula (solo los nombres, no los valores numéricos).
  */
 function getGeneroKeys(): string[] {
   return Object.keys(GeneroPelicula).filter((key) => isNaN(Number(key)));
 }
 
 /**
- * Función para asignar un color de fondo diferente según el género de la película.
- * Esto ayuda a diferenciar visualmente los elementos en la lista.
+ * Asigna clases de estilo según el género para diferenciar visualmente.
  */
 function getGeneroColor(genero: GeneroPelicula): string {
   switch (genero) {
@@ -42,107 +50,116 @@ function getGeneroColor(genero: GeneroPelicula): string {
 }
 
 export default function Ejercicio2() {
-  // Obtengo las listas de géneros y países para usarlas en los desplegables (selects)
+  // Listas de géneros y países para los desplegables
   const generosKeys = getGeneroKeys();
   const paisesValues = Object.values(PaisPelicula);
 
-  // Definición de Estados (Hooks)
-  // Estado para almacenar la lista de películas. Se inicializa como un array vacío.
+  // Estados del componente
   const [peliculas, setPeliculas] = useState<Pelicula[]>([]);
-
-  // Estados para los campos del formulario
   const [titulo, setTitulo] = useState("");
   const [genero, setGenero] = useState<GeneroPelicula>(GeneroPelicula.Accion);
   const [pais, setPais] = useState<PaisPelicula>(PaisPelicula.Venezuela);
-
-  // Estado para manejar mensajes de error (validaciones)
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  // Estado para controlar si el componente ya se montó en el cliente (evita errores de hidratación con LocalStorage)
-  const [mounted, setMounted] = useState(false);
-
-  // Efecto para CARGAR los datos del LocalStorage al iniciar la aplicación.
-  // Se ejecuta una sola vez cuando el componente se monta (array de dependencias vacío []).
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-      const data = localStorage.getItem("peliculas");
-      if (data) {
-        try {
-          // Convierto el string JSON recuperado de vuelta a un array de objetos Pelicula
-          const parsedData = JSON.parse(data) as Pelicula[];
-          setPeliculas(parsedData);
-        } catch (e) {
-          console.error("Error al leer del localStorage:", e);
-        }
+  /**
+   * Función para cargar las películas desde la API del servidor.
+   * Usa useCallback para memorizar la función y evitar re-renders innecesarios.
+   */
+  const cargarPeliculas = useCallback(async () => {
+    try {
+      const response = await fetch("/api/peliculas");
+      if (response.ok) {
+        const data = await response.json();
+        setPeliculas(data);
       }
-    }, 0);
-    return () => clearTimeout(timer);
+    } catch (e) {
+      console.error("Error al cargar películas:", e);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // Efecto para GUARDAR los datos en LocalStorage cada vez que la lista de películas cambia.
-  // Se ejecuta cada vez que el estado 'peliculas' o 'mounted' se actualiza.
+  // Efecto para cargar las películas al montar el componente
   useEffect(() => {
-    if (mounted) {
-      localStorage.setItem("peliculas", JSON.stringify(peliculas));
-    }
-  }, [peliculas, mounted]);
+    cargarPeliculas();
+  }, [cargarPeliculas]);
 
-  // Función que se ejecuta al enviar el formulario
-  const agregarPelicula = (e: React.FormEvent) => {
-    e.preventDefault(); // Evito que la página se recargue
+  /**
+   * Función para agregar una nueva película a través de la API.
+   */
+  const agregarPelicula = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    // Validación 1: El título no puede estar vacío
+    // Validación del lado del cliente
     if (titulo.trim() === "") {
       setError("El título no puede estar vacío");
       return;
     }
 
-    // Validación 2: No permitir películas duplicadas (mismo nombre)
-    const existe = peliculas.some(
-      (p) => p.titulo.toLowerCase() === titulo.toLowerCase()
-    );
+    try {
+      const response = await fetch("/api/peliculas", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          titulo,
+          genero,
+          pais,
+        }),
+      });
 
-    if (existe) {
-      setError("Esa película ya existe en la lista");
-      return;
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Error al agregar la película");
+        return;
+      }
+
+      // Recargar la lista de películas
+      await cargarPeliculas();
+      setTitulo("");
+      setError("");
+    } catch (e) {
+      console.error("Error al agregar película:", e);
+      setError("Error de conexión con el servidor");
     }
-
-    // Creo el nuevo objeto película con los datos del formulario
-    const nueva: Pelicula = {
-      titulo,
-      genero,
-      pais,
-    };
-
-    // Actualizo el estado agregando la nueva película al array existente
-    setPeliculas([...peliculas, nueva]);
-
-    // Limpio el campo de título y el error
-    setTitulo("");
-    setError("");
   };
 
-  // Función para eliminar una película de la lista por su índice
-  const eliminarPelicula = (index: number) => {
-    const copia = [...peliculas]; // Creo una copia del array para no mutar el estado directamente
-    copia.splice(index, 1); // Elimino el elemento
-    setPeliculas(copia); // Actualizo el estado
+  /**
+   * Función para eliminar una película de la lista.
+   */
+  const eliminarPelicula = async (index: number) => {
+    try {
+      const response = await fetch(`/api/peliculas?index=${index}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        await cargarPeliculas();
+      }
+    } catch (e) {
+      console.error("Error al eliminar película:", e);
+    }
   };
 
-  // Si no está montado, renderizo un div vacío para evitar diferencias entre servidor y cliente
-  if (!mounted) {
-    return <div className="min-h-screen bg-white"></div>;
+  // Pantalla de carga mientras se obtienen los datos
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-slate-500">Cargando...</div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4 font-sans text-slate-800">
-      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12">
 
-        {/* SECCIÓN IZQUIERDA: Bienvenida y Logos */}
-        <div className="flex flex-col justify-center space-y-6">
+        {/* SECCIÓN IZQUIERDA: Bienvenida, Formulario y Enums */}
+        <div className="flex flex-col justify-start space-y-6">
           <div className="flex items-center">
-            {/* Logos solicitados: Favicon y Next.js */}
             <Image
               src="/favicon.ico"
               alt="Favicon"
@@ -159,59 +176,39 @@ export default function Ejercicio2() {
             />
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-slate-900">
-            Hola, Profesor <br />
-            Carlos Márquez😎
+          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight text-slate-900">
+            Ejercicio 2: <br />
+            Registro de Películas 🎬
           </h1>
 
           <p className="text-lg text-slate-600">
-            Felicitaciones, La app se está ejecutando.🧑🏻‍💻
+            Las películas se guardan en memoria del servidor mientras esté activo.
           </p>
 
-          {/* Mostrar los Enums disponibles como pide el ejercicio 2 */}
-          <div className="mt-8 p-4 bg-slate-50 rounded-lg border border-slate-200">
-            <h3 className="font-bold text-slate-700 mb-2">Datos disponibles (Enumeradas):</h3>
-            <div className="text-sm text-slate-600">
-              <p><span className="font-semibold">Géneros:</span> {generosKeys.join(", ")}</p>
-              <p className="mt-1"><span className="font-semibold">Países:</span> {paisesValues.join(", ")}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* SECCIÓN DERECHA: Formulario y Lista de Películas */}
-        <div className="border-l-2 border-pink-100 pl-8 md:pl-12 py-4 flex flex-col h-full">
-
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6 text-slate-900">Añade una nueva película</h2>
+          {/* Formulario de registro */}
+          <div className="bg-slate-50 rounded-xl p-6 border border-slate-200">
+            <h2 className="text-xl font-bold mb-4 text-slate-900">Añadir Nueva Película</h2>
 
             <form onSubmit={agregarPelicula} className="space-y-4">
+              {/* Campo de título */}
               <div className="flex flex-col space-y-1">
-                <label className="text-sm text-slate-500 font-medium">Nombre de la película</label>
-                <div className="flex space-x-2">
-                  <input
-                    value={titulo}
-                    onChange={(e) => setTitulo(e.target.value)}
-                    placeholder="Ej: Jurassic Park"
-                    className="flex-1 border-2 border-slate-200 rounded-full px-4 py-2 focus:outline-none focus:border-blue-500 transition-colors"
-                  />
-                  <button
-                    type="button"
-                    onClick={agregarPelicula}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full transition-colors"
-                  >
-                    Añadir
-                  </button>
-                </div>
-                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+                <label className="text-sm text-slate-500 font-medium">Título de la película</label>
+                <input
+                  value={titulo}
+                  onChange={(e) => setTitulo(e.target.value)}
+                  placeholder="Ej: Jurassic Park"
+                  className="border-2 border-slate-200 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 transition-colors"
+                />
               </div>
 
+              {/* Selectores de Género y País */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-slate-400 mb-1 block">Género (Enumerar)</label>
+                  <label className="text-sm text-slate-500 font-medium mb-1 block">Género</label>
                   <select
                     value={genero}
                     onChange={(e) => setGenero(Number(e.target.value))}
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 bg-white"
                   >
                     {generosKeys.map((g, i) => (
                       <option key={i} value={i}>{g}</option>
@@ -219,11 +216,11 @@ export default function Ejercicio2() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs text-slate-400 mb-1 block">País (Enumerar)</label>
+                  <label className="text-sm text-slate-500 font-medium mb-1 block">País</label>
                   <select
                     value={pais}
                     onChange={(e) => setPais(e.target.value as PaisPelicula)}
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 bg-white"
                   >
                     {paisesValues.map((p, i) => (
                       <option key={i} value={p}>{p}</option>
@@ -231,35 +228,104 @@ export default function Ejercicio2() {
                   </select>
                 </div>
               </div>
+
+              {/* Mensaje de error */}
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+
+              {/* Botón de envío */}
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+              >
+                Registrar Película
+              </button>
             </form>
           </div>
 
-          <div className="flex-1 overflow-y-auto pr-2">
-            <p className="text-xs text-slate-400 mb-4">Listado de películas guardadas:</p>
-
-            <div className="flex flex-wrap gap-3 content-start">
-              {peliculas.map((p, i) => (
-                <div
-                  key={i}
-                  className={`group relative px-4 py-2 rounded-full font-medium text-sm cursor-default transition-all hover:shadow-md flex items-center gap-2 ${getGeneroColor(p.genero)}`}
-                  title={`${GeneroPelicula[p.genero]} - ${p.pais}`}
-                >
-                  <span>{p.titulo}</span>
-                  <button
-                    onClick={() => eliminarPelicula(i)}
-                    className="opacity-0 group-hover:opacity-100 text-current hover:text-red-600 font-bold transition-opacity"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-
-              {peliculas.length === 0 && (
-                <p className="text-slate-300 italic">No hay películas añadidas aún.</p>
-              )}
+          {/* Mostrar los Enums disponibles */}
+          <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+            <h3 className="font-bold text-slate-700 mb-2">Enums Definidos:</h3>
+            <div className="text-sm text-slate-600">
+              <p><span className="font-semibold">GeneroPelicula:</span> {generosKeys.join(", ")}</p>
+              <p className="mt-1"><span className="font-semibold">PaisPelicula:</span> {paisesValues.join(", ")}</p>
             </div>
           </div>
+        </div>
 
+        {/* SECCIÓN DERECHA: Tabla de Películas Registradas */}
+        <div className="flex flex-col h-full">
+          <h2 className="text-2xl font-bold mb-4 text-slate-900">
+            Películas Registradas ({peliculas.length})
+          </h2>
+
+          {peliculas.length === 0 ? (
+            <div className="flex-1 flex items-center justify-center bg-slate-50 rounded-xl border border-slate-200">
+              <p className="text-slate-400 italic text-center">
+                No hay películas registradas aún.<br />
+                ¡Agrega una desde el formulario!
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-xl border border-slate-200">
+              <table className="w-full">
+                <thead className="bg-slate-100">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-sm font-semibold text-slate-700 border-b border-slate-200">
+                      #
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-semibold text-slate-700 border-b border-slate-200">
+                      Título
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-semibold text-slate-700 border-b border-slate-200">
+                      Género
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-semibold text-slate-700 border-b border-slate-200">
+                      País
+                    </th>
+                    <th className="text-center px-4 py-3 text-sm font-semibold text-slate-700 border-b border-slate-200">
+                      Acción
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {peliculas.map((p, i) => (
+                    <tr key={i} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3 text-sm text-slate-500 border-b border-slate-100">
+                        {i + 1}
+                      </td>
+                      <td className="px-4 py-3 text-sm font-medium text-slate-800 border-b border-slate-100">
+                        {p.titulo}
+                      </td>
+                      <td className="px-4 py-3 border-b border-slate-100">
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getGeneroColor(p.genero)}`}>
+                          {GeneroPelicula[p.genero]}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-slate-600 border-b border-slate-100">
+                        {p.pais}
+                      </td>
+                      <td className="px-4 py-3 text-center border-b border-slate-100">
+                        <button
+                          onClick={() => eliminarPelicula(i)}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1 rounded-lg transition-colors text-sm font-medium"
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Nota informativa */}
+          <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+            <p className="text-xs text-amber-700">
+              <strong>Nota:</strong> Los datos se almacenan en memoria del servidor.
+              Si reinicias el servidor o haces cambios en el código, la lista se vaciará.
+            </p>
+          </div>
         </div>
       </div>
     </div>
