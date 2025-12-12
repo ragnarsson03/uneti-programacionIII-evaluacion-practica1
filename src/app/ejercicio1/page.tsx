@@ -28,7 +28,7 @@ export default function Ejercicio1Formulario() {
           Ejercicio 1
         </h1>
         <p className="text-gray-500 font-medium text-center mb-8">
-          Bienvenido!Profesor Carlos Márquez 👨🏻‍💻
+          Bienvenido! Profesor Carlos Márquez 👨🏻‍💻
         </p>
 
         <p className="text-gray-700 mb-8 text-center text-lg leading-relaxed">
