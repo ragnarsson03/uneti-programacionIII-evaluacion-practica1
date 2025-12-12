@@ -5,7 +5,7 @@
 ## 👨🏻‍💻 Desarrollado por
 
 -   **Frederick Durán - 30346056**
--   **Institución** UNETI (Universidad Nacional Experimental de las Telecomunicaciones e Informática)
+-   **Institución:** UNETI (Universidad Nacional Experimental de las Telecomunicaciones e Informática)
 
 
 <div align="center">
@@ -128,7 +128,7 @@ Para que el proyecto funcione correctamente en su computador Profesor Carlos, as
 2.  **NPM**:
     *   Generalmente viene instalado con Node.js.
 
-> **Nota para el Profesor:** No es necesario instalar Next.js de forma global en su PC. Todas las dependencias necesarias se instalarán localmente dentro de la carpeta del proyecto al ejecutar `npm install`.
+ **NOTA IMPORTANTE** No es necesario instalar Next.js de forma global en su PC. Todas las dependencias necesarias se instalarán localmente dentro de la carpeta del proyecto al ejecutar `npm install`.
 
 ---
 
