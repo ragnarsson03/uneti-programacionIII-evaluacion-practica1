@@ -46,6 +46,21 @@ El usuario ingresa su animal favorito en un formulario HTML. Al enviarlo, los da
 -   **Server-Side Logic:** Procesamiento de formularios en el servidor.
 -   **HTML Forms:** Interacción nativa sin JavaScript del lado del cliente.
 
+### 📸 Capturas de Pantalla
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><strong>Formulario de Entrada</strong></td>
+      <td align="center"><strong>Resultado</strong></td>
+    </tr>
+    <tr>
+      <td align="center"><img src="public/ejercicio1.png" alt="Ejemplo Ejercicio 1" width="400"/></td>
+      <td align="center"><img src="public/resultado_ejercicio1.png" alt="Resultado Ejercicio 1" width="400"/></td>
+    </tr>
+  </table>
+</div>
+
 ---
 
 ## 🔬 Ejercicio 2 – TypeScript + React Hooks
@@ -63,6 +78,21 @@ Una aplicación "Single Page" que permite gestionar una lista de películas. Imp
 -   **TypeScript Enums:** Tipado fuerte para datos categóricos.
 -   **React Hooks:** `useState` para gestión de estado y `useEffect` para el ciclo de vida y persistencia.
 -   **Client Components:** Renderizado interactivo en el navegador.
+
+### 📸 Capturas de Pantalla
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><strong>Gestión de Películas</strong></td>
+      <td align="center"><strong>Listado de Resultados</strong></td>
+    </tr>
+    <tr>
+      <td align="center"><img src="public/ejercicio2.png" alt="Ejemplo Ejercicio 2" width="400"/></td>
+      <td align="center"><img src="public/resultado_ejercicio2.png" alt="Resultado Ejercicio 2" width="400"/></td>
+    </tr>
+  </table>
+</div>
 
 ---
 
@@ -92,6 +122,12 @@ El proyecto ha sido modernizado dejando atrás EJS y Express puros para utilizar
 
 3.  **Abrir la aplicación:**
     Visita `http://localhost:3000` en el navegador.
+
+### 🖥️ Vista Principal
+
+<div align="center">
+  <img src="public/localhost1.png" alt="Vista Principal localhost" width="800"/>
+</div>
 
 ---
 

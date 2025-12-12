@@ -229,7 +229,7 @@ export default function Ejercicio2() {
                 <input
                   value={titulo}
                   onChange={(e) => setTitulo(e.target.value)}
-                  placeholder="Ejemplo: Interstellar"
+                  placeholder="Ejemplo: El Zorro"
                   className="w-full border-2 border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors shadow-sm"
                 />
               </div>
