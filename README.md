@@ -1,11 +1,11 @@
 ## 👨‍🏫 Docente
 
 -   **Profesor:** Carlos Márquez
--   **Institución:** UNETI
 
 ## 👨🏻‍💻 Desarrollado por
 
 -   **Frederick Durán - 30346056**
+-   **Institución/Universidad:** UNETI (Universidad Nacional Experimental de las Telecomunicaciones e Informática)
 
 
 <div align="center">
@@ -23,14 +23,14 @@ Este repositorio contiene el desarrollo de la Evaluación Práctica 1 de la Unid
 El proyecto utiliza la estructura recomendada de **App Router** de Next.js para buen seguimiento y modularización del código:
 
 ```
-.
+
 ├── src/
 │   ├── app/
-│   │   ├── api/            # Route Handlers (Backend Serverless)
-│   │   ├── ejercicio1/     # Vista del Ejercicio 1 (Formulario)
-│   │   ├── ejercicio2/     # Vista del Ejercicio 2 (Lógica Cliente)
-│   │   └── page.tsx        # Menú Principal
-└── public/                 # Recursos estáticos
+│   │   ├── api/            # Route Handlers (Backend Serverless o Manejador de Ruta!)
+│   │   ├── ejercicio1/     # Vista del Ejercicio 1 (Formulario de Animal Favorito =) )
+│   │   ├── ejercicio2/     # Vista del Ejercicio 2 (Lógica Cliente de Películas) 
+│   │   └── page.tsx        # Menú Principal (o vista principal como el index.html)
+└── public/                 # Recursos estáticos (por ejemplo las imágenes .png)
 ```
 
 ---
