@@ -63,7 +63,7 @@ export default function Ejercicio1Formulario() {
             type="submit"
             className="w-full py-3 bg-blue-600 text-white text-lg font-bold rounded-xl hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-colors shadow-md"
           >
-            Enviar a Node.js 🚀
+            Enviar a Node.js
           </button>
         </form>
 
