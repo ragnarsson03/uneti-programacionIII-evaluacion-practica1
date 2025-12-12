@@ -5,7 +5,8 @@
 
 ## 👨🏻‍💻 Desarrollado por
 
--   **Frederick Durán**
+-   **Frederick Durán - 30346056**
+
 
 <div align="center">
   <img src="uneti-logotipo.png" alt="Logo UNETI" width="200"/>
@@ -19,7 +20,7 @@ Este repositorio contiene el desarrollo de la Evaluación Práctica 1 de la Unid
 
 ## Estructura General del Repositorio
 
-El proyecto utiliza la estructura recomendada de **App Router** de Next.js:
+El proyecto utiliza la estructura recomendada de **App Router** de Next.js para buen seguimiento y modularización del código:
 
 ```
 .
@@ -33,6 +34,15 @@ El proyecto utiliza la estructura recomendada de **App Router** de Next.js:
 ```
 
 ---
+
+### 🖥️ Vista Principal
+
+<div align="center">
+  <img src="public/localhost1.png" alt="Vista Principal localhost" width="800"/>
+</div>
+
+---
+
 
 ## 🚀 Ejercicio 1 – Node.js (Route Handlers)
 
@@ -123,11 +133,5 @@ El proyecto ha sido modernizado dejando atrás EJS y Express puros para utilizar
 3.  **Abrir la aplicación:**
     Visita `http://localhost:3000` en el navegador.
 
-### 🖥️ Vista Principal
 
-<div align="center">
-  <img src="public/localhost1.png" alt="Vista Principal localhost" width="800"/>
-</div>
-
----
 
