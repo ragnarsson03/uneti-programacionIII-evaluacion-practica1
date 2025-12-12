@@ -67,7 +67,7 @@ export default function Ejercicio1Formulario() {
           </button>
         </form>
 
-        {/* Sección decorativa con ejemplos */}
+        {/* Sección decorativa con ejemplos =) */}
         <div className="mt-10 pt-6 border-t border-gray-200">
           <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Ejemplos válidos:</h3>
           <div className="flex flex-wrap gap-2 text-sm text-gray-600">

@@ -118,6 +118,30 @@ El proyecto ha sido modernizado dejando atrás EJS y Express puros para utilizar
 
 ---
 
+## 📋 Requisitos Previos (Antes de Iniciar)
+
+Para que el proyecto funcione correctamente en su computador, asegúrese de tener instalado:
+
+1.  **Node.js**:
+    *   Se recomienda la versión **v18.17.0** o superior (Next.js 15 requiere versiones modernas).
+    *   Puede verificar su versión ejecutando: `node -v` en su terminal.
+2.  **NPM**:
+    *   Generalmente viene instalado con Node.js.
+
+> **Nota para el Profesor:** No es necesario instalar Next.js de forma global en su PC. Todas las dependencias necesarias se instalarán localmente dentro de la carpeta del proyecto al ejecutar `npm install`.
+
+---
+
+## 📂 ¿Qué es la carpeta `.next`?
+
+Cuando ejecute el proyecto, notará que se crea automáticamente una carpeta llamada `.next`.
+
+*   **¿Qué contiene?**: Es el resultado de la compilación del proyecto. Next.js toma todo nuestro código (TypeScript, React) y lo transforma en código ultra-optimizado que el navegador puede entender.
+*   **Importante**: Esta carpeta **NO** se debe modificar manualmente. Si en algún momento tiene problemas de caché o errores extraños, puede borrarla con confianza y al volver a ejecutar `npm run dev`, se generará de nuevo automáticamente.
+
+---
+
+
 ## ⚙️ Instalación y Ejecución
 
 1.  **Instalar dependencias:**
