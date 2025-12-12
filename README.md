@@ -5,7 +5,7 @@
 ## 👨🏻‍💻 Desarrollado por
 
 -   **Frederick Durán - 30346056**
--   **Institución/Universidad:** UNETI (Universidad Nacional Experimental de las Telecomunicaciones e Informática)
+-   **Institución** UNETI (Universidad Nacional Experimental de las Telecomunicaciones e Informática)
 
 
 <div align="center">
