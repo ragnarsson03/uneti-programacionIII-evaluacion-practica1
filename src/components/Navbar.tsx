@@ -1,6 +1,13 @@
-// src/components/Navbar.tsx
 import Link from 'next/link';
 import { Home, Pencil, FileCode } from 'lucide-react';
+
+/**
+ * @fileoverview Componente de Navegación (Navbar)
+ * @description Barra de navegación con enlaces a las rutas principales.
+ * Utiliza iconos de la librería 'lucide-react' para una mejor apariencia.
+ * 
+ * @author Frederick Durán
+ */
 
 export default function Navbar() {
   return (

@@ -1,6 +1,13 @@
-// src/components/Header.tsx
 import Image from 'next/image';
 import Navbar from './Navbar';
+
+/**
+ * @fileoverview Componente de Encabezado (Header)
+ * @description Barra superior que se mantiene fija en todas las páginas.
+ * Contiene el logo de la UNETI y el menú de navegación principal.
+ * 
+ * @author Frederick Durán
+ */
 
 export default function Header() {
   return (
@@ -8,11 +15,11 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         {/* Logo */}
         <div className="flex items-center space-x-2 flex-shrink-0">
-          <Image 
-            src="/uneti-logotipo.png" 
-            alt="UNETI Logo" 
-            width={50} 
-            height={50} 
+          <Image
+            src="/uneti-logotipo.png"
+            alt="UNETI Logo"
+            width={50}
+            height={50}
             className="rounded-full"
           />
           <span className="text-xl font-bold hidden sm:block">

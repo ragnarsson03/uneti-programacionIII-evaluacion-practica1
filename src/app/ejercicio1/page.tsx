@@ -28,7 +28,7 @@ export default function Ejercicio1Formulario() {
           Ejercicio 1
         </h1>
         <p className="text-gray-500 font-medium text-center mb-8">
-          Profesor Carlos Márquez 👨🏻‍💻
+          Bienvenido! Profesor Carlos Márquez 👨🏻‍💻
         </p>
 
         <p className="text-gray-700 mb-8 text-center text-lg leading-relaxed">
@@ -63,11 +63,11 @@ export default function Ejercicio1Formulario() {
             type="submit"
             className="w-full py-3 bg-blue-600 text-white text-lg font-bold rounded-xl hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition-colors shadow-md"
           >
-            Enviar a Node.js 🚀
+            Enviar a Node.js
           </button>
         </form>
 
-        {/* Sección decorativa con ejemplos */}
+        {/* Sección decorativa con ejemplos =) */}
         <div className="mt-10 pt-6 border-t border-gray-200">
           <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Ejemplos válidos:</h3>
           <div className="flex flex-wrap gap-2 text-sm text-gray-600">

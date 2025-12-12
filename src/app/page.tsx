@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 /**
  * @fileoverview Página de Inicio (Home)
- * @description Esta es la puerta de entrada a nuestra aplicación.
+ * @description Esta es la puerta de entrada a nuestra aplicación!! Super Importante
  * 
  * Aquí presentamos al usuario (Profesor) un menú sencillo 
  * para navegar hacia los dos ejercicios de la evaluación.
