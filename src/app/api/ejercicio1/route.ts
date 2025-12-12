@@ -16,7 +16,7 @@ import { NextResponse } from 'next/server';
  * @returns {NextResponse} Una redirección (HTTP 307) a la página de resultados.
  */
 export async function POST(request: Request) {
-    
+
     // Paso 1: Interceptación y Extracción de Datos (Lógica NODE)
     // Usamos request.formData() para leer el cuerpo del formulario enviado por POST.
     const formData = await request.formData();
@@ -26,14 +26,14 @@ export async function POST(request: Request) {
     if (!animal) {
         // Si el campo está vacío, redirigimos al usuario de vuelta al formulario principal
         // El 'request.url' asegura que la redirección sea correcta, aunque sea un error 400.
-       return NextResponse.redirect(new URL('/ejercicio1', request.url));
+        return NextResponse.redirect(new URL('/ejercicio1', request.url));
     }
 
     // Paso 3: Procesamiento y Preparación de Recarga (Redirección)
     // Codificamos el dato para asegurarnos de que es seguro en la URL (parámetros de búsqueda).
     const animalEncoded = encodeURIComponent(animal);
 
-    // ✅ Redirección: Esto le dice al navegador que haga una nueva solicitud GET 
+    // Redirección: Esto le dice al navegador que haga una nueva solicitud GET 
     // a la ruta de la Vista 2 (/ejercicio1/resultado), llevando el dato.
     // Esto simula la "recarga de otra página html" que pide el enunciado.
     return NextResponse.redirect(new URL(`/ejercicio1/resultado?animal=${animalEncoded}`, request.url));
