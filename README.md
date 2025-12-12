@@ -120,7 +120,7 @@ El proyecto ha sido modernizado dejando atrás EJS y Express puros para utilizar
 
 ## 📋 Requisitos Previos (Antes de Iniciar)
 
-Para que el proyecto funcione correctamente en su computador, asegúrese de tener instalado:
+Para que el proyecto funcione correctamente en su computador Profesor Carlos, asegúrese de tener instalado:
 
 1.  **Node.js**:
     *   Se recomienda la versión **v18.17.0** o superior (Next.js 15 requiere versiones modernas).
@@ -132,7 +132,7 @@ Para que el proyecto funcione correctamente en su computador, asegúrese de tene
 
 ---
 
-## 📂 ¿Qué es la carpeta `.next`?
+## ¿Qué es la carpeta `.next`?
 
 Cuando ejecute el proyecto, notará que se crea automáticamente una carpeta llamada `.next`.
 
